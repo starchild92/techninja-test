@@ -12,21 +12,23 @@
 namespace Symfony\Component\Form\Extension\Core\Type;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\ChoiceList\ArrayChoiceList;
-use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class TimezoneType extends AbstractType implements ChoiceLoaderInterface
+class TimezoneType extends AbstractType
 {
     /**
-     * Timezone loaded choice list.
+     * Stores the available timezone choices.
      *
-     * The choices are generated from the ICU function \DateTimeZone::listIdentifiers().
-     *
-     * @var ArrayChoiceList
+     * @var array
      */
-    private $choiceList;
+    private static $timezones;
+
+    /**
+     * Stores the available timezone choices.
+     *
+     * @var array
+     */
+    private static $flippedTimezones;
 
     /**
      * {@inheritdoc}
@@ -34,15 +36,8 @@ class TimezoneType extends AbstractType implements ChoiceLoaderInterface
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'choice_loader' => function (Options $options) {
-                if ($options['choices']) {
-                    @trigger_error(sprintf('Using the "choices" option in %s has been deprecated since version 3.3 and will be ignored in 4.0. Override the "choice_loader" option instead or set it to null.', __CLASS__), E_USER_DEPRECATED);
-
-                    return null;
-                }
-
-                return $this;
-            },
+            'choices' => self::getFlippedTimezones(),
+            'choices_as_values' => true,
             'choice_translation_domain' => false,
         ));
     }
@@ -58,87 +53,92 @@ class TimezoneType extends AbstractType implements ChoiceLoaderInterface
     /**
      * {@inheritdoc}
      */
+    public function getName()
+    {
+        return $this->getBlockPrefix();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getBlockPrefix()
     {
         return 'timezone';
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the timezone choices.
+     *
+     * The choices are generated from the ICU function
+     * \DateTimeZone::listIdentifiers(). They are cached during a single request,
+     * so multiple timezone fields on the same page don't lead to unnecessary
+     * overhead.
+     *
+     * @return array The timezone choices
+     *
+     * @deprecated Deprecated since version 2.8
      */
-    public function loadChoiceList($value = null)
+    public static function getTimezones()
     {
-        if (null !== $this->choiceList) {
-            return $this->choiceList;
+        @trigger_error('The TimezoneType::getTimezones() method is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
+
+        if (null === static::$timezones) {
+            static::$timezones = array();
+
+            foreach (\DateTimeZone::listIdentifiers() as $timezone) {
+                $parts = explode('/', $timezone);
+
+                if (count($parts) > 2) {
+                    $region = $parts[0];
+                    $name = $parts[1].' - '.$parts[2];
+                } elseif (count($parts) > 1) {
+                    $region = $parts[0];
+                    $name = $parts[1];
+                } else {
+                    $region = 'Other';
+                    $name = $parts[0];
+                }
+
+                static::$timezones[$region][$timezone] = str_replace('_', ' ', $name);
+            }
         }
 
-        return $this->choiceList = new ArrayChoiceList(self::getTimezones(), $value);
+        return static::$timezones;
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function loadChoicesForValues(array $values, $value = null)
-    {
-        // Optimize
-        $values = array_filter($values);
-        if (empty($values)) {
-            return array();
-        }
-
-        // If no callable is set, values are the same as choices
-        if (null === $value) {
-            return $values;
-        }
-
-        return $this->loadChoiceList($value)->getChoicesForValues($values);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function loadValuesForChoices(array $choices, $value = null)
-    {
-        // Optimize
-        $choices = array_filter($choices);
-        if (empty($choices)) {
-            return array();
-        }
-
-        // If no callable is set, choices are the same as values
-        if (null === $value) {
-            return $choices;
-        }
-
-        return $this->loadChoiceList($value)->getValuesForChoices($choices);
-    }
-
-    /**
-     * Returns a normalized array of timezone choices.
+     * Returns the timezone choices.
+     *
+     * The choices are generated from the ICU function
+     * \DateTimeZone::listIdentifiers(). They are cached during a single request,
+     * so multiple timezone fields on the same page don't lead to unnecessary
+     * overhead.
      *
      * @return array The timezone choices
      */
-    private static function getTimezones()
+    private static function getFlippedTimezones()
     {
-        $timezones = array();
+        if (null === self::$timezones) {
+            self::$timezones = array();
 
-        foreach (\DateTimeZone::listIdentifiers() as $timezone) {
-            $parts = explode('/', $timezone);
+            foreach (\DateTimeZone::listIdentifiers() as $timezone) {
+                $parts = explode('/', $timezone);
 
-            if (count($parts) > 2) {
-                $region = $parts[0];
-                $name = $parts[1].' - '.$parts[2];
-            } elseif (count($parts) > 1) {
-                $region = $parts[0];
-                $name = $parts[1];
-            } else {
-                $region = 'Other';
-                $name = $parts[0];
+                if (count($parts) > 2) {
+                    $region = $parts[0];
+                    $name = $parts[1].' - '.$parts[2];
+                } elseif (count($parts) > 1) {
+                    $region = $parts[0];
+                    $name = $parts[1];
+                } else {
+                    $region = 'Other';
+                    $name = $parts[0];
+                }
+
+                self::$timezones[$region][str_replace('_', ' ', $name)] = $timezone;
             }
-
-            $timezones[$region][str_replace('_', ' ', $name)] = $timezone;
         }
 
-        return $timezones;
+        return self::$timezones;
     }
 }
