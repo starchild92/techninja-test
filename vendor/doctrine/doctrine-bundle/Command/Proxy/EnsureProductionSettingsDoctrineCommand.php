@@ -46,6 +46,6 @@ class EnsureProductionSettingsDoctrineCommand extends EnsureProductionSettingsCo
     {
         DoctrineCommandHelper::setApplicationEntityManager($this->getApplication(), $input->getOption('em'));
 
-        return parent::execute($input, $output);
+        parent::execute($input, $output);
     }
 }

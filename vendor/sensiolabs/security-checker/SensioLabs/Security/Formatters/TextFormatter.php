@@ -13,8 +13,6 @@ namespace SensioLabs\Security\Formatters;
 
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\FormatterHelper;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 class TextFormatter implements FormatterInterface
 {
@@ -32,29 +30,45 @@ class TextFormatter implements FormatterInterface
      */
     public function displayResults(OutputInterface $output, $lockFilePath, array $vulnerabilities)
     {
-        $output = new SymfonyStyle(new ArrayInput(array()), $output);
-        $output->title('Symfony Security Check Report');
-        // use ->comment when bumping console to 2.8+
-        $output->writeln(sprintf('<fg=default;bg=default> // </>Checked file: <comment>%s</>', realpath($lockFilePath)));
+        $output->writeln("\n<fg=blue>Security Check Report\n~~~~~~~~~~~~~~~~~~~~~</>\n");
+        $output->writeln(sprintf('Checked file: <comment>%s</>', realpath($lockFilePath)));
+        $output->write("\n");
 
         if ($count = count($vulnerabilities)) {
-            $output->error(sprintf('%d packages have known vulnerabilities.', $count));
+            $status = 'CRITICAL';
+            $style = 'error';
         } else {
-            $output->success('No packages have known vulnerabilities.');
+            $status = 'OK';
+            $style = 'bg=green;fg=white';
         }
+
+        $message = sprintf('%d %s known vulnerabilities', $count, 1 === $count ? 'package has' : 'packages have');
+        $output->writeln($this->formatter->formatBlock(array('['.$status.']', $message), $style, true));
+        $output->write("\n");
 
         if (0 !== $count) {
             foreach ($vulnerabilities as $dependency => $issues) {
-                $output->section(sprintf('%s (%s)', $dependency, $issues['version']));
+                $dependencyFullName = $dependency.' ('.$issues['version'].')';
+                $output->writeln('<info>'.$dependencyFullName."\n".str_repeat('-', strlen($dependencyFullName))."</>\n");
 
-                $details = array_map(function ($value) {
-                    return sprintf("<info>%s</>: %s\n   %s", $value['cve'] ?: '(no CVE ID)', $value['title'], $value['link']);
-                }, $issues['advisories']);
+                foreach ($issues['advisories'] as $issue => $details) {
+                    $output->write(' * ');
+                    if ($details['cve']) {
+                        $output->write('<comment>'.$details['cve'].': </comment>');
+                    }
+                    $output->writeln($details['title']);
 
-                $output->listing($details);
+                    if ('' !== $details['link']) {
+                        $output->writeln('   '.$details['link']);
+                    }
+
+                    $output->writeln('');
+                }
             }
         }
 
-        $output->note('This checker can only detect vulnerabilities that are referenced in the SensioLabs security advisories database. Execute this command regularly to check the newly discovered vulnerabilities.');
+        $output->writeln('<bg=yellow;fg=white>            </> This checker can only detect vulnerabilities that are referenced');
+        $output->writeln('<bg=yellow;fg=white> Disclaimer </> in the SensioLabs security advisories database. Execute this');
+        $output->writeln("<bg=yellow;fg=white>            </> command regularly to check the newly discovered vulnerabilities.\n");
     }
 }

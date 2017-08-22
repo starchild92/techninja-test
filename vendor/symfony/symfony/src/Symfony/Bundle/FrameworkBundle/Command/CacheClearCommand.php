@@ -54,6 +54,7 @@ EOF
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $outputIsVerbose = $output->isVerbose();
         $io = new SymfonyStyle($input, $output);
 
         $realCacheDir = $this->getContainer()->getParameter('kernel.cache_dir');
@@ -77,63 +78,47 @@ EOF
         if ($input->getOption('no-warmup')) {
             $filesystem->rename($realCacheDir, $oldCacheDir);
         } else {
-            $warning = 'Calling cache:clear without the --no-warmup option is deprecated since version 3.3. Cache warmup should be done with the cache:warmup command instead.';
+            // the warmup cache dir name must have the same length than the real one
+            // to avoid the many problems in serialized resources files
+            $realCacheDir = realpath($realCacheDir);
+            $warmupDir = substr($realCacheDir, 0, -1).('_' === substr($realCacheDir, -1) ? '-' : '_');
 
-            @trigger_error($warning, E_USER_DEPRECATED);
+            if ($filesystem->exists($warmupDir)) {
+                if ($outputIsVerbose) {
+                    $io->comment('Clearing outdated warmup directory...');
+                }
+                $filesystem->remove($warmupDir);
+            }
 
-            $io->warning($warning);
+            if ($outputIsVerbose) {
+                $io->comment('Warming up cache...');
+            }
+            $this->warmup($warmupDir, $realCacheDir, !$input->getOption('no-optional-warmers'));
 
-            $this->warmupCache($input, $output, $realCacheDir, $oldCacheDir);
+            $filesystem->rename($realCacheDir, $oldCacheDir);
+            if ('\\' === DIRECTORY_SEPARATOR) {
+                sleep(1);  // workaround for Windows PHP rename bug
+            }
+            $filesystem->rename($warmupDir, $realCacheDir);
         }
 
-        if ($output->isVerbose()) {
+        if ($outputIsVerbose) {
             $io->comment('Removing old cache directory...');
         }
 
         $filesystem->remove($oldCacheDir);
 
-        if ($output->isVerbose()) {
+        if ($outputIsVerbose) {
             $io->comment('Finished');
         }
 
         $io->success(sprintf('Cache for the "%s" environment (debug=%s) was successfully cleared.', $kernel->getEnvironment(), var_export($kernel->isDebug(), true)));
     }
 
-    private function warmupCache(InputInterface $input, OutputInterface $output, $realCacheDir, $oldCacheDir)
-    {
-        $filesystem = $this->getContainer()->get('filesystem');
-        $io = new SymfonyStyle($input, $output);
-
-        // the warmup cache dir name must have the same length than the real one
-        // to avoid the many problems in serialized resources files
-        $realCacheDir = realpath($realCacheDir);
-        $warmupDir = substr($realCacheDir, 0, -1).('_' === substr($realCacheDir, -1) ? '-' : '_');
-
-        if ($filesystem->exists($warmupDir)) {
-            if ($output->isVerbose()) {
-                $io->comment('Clearing outdated warmup directory...');
-            }
-            $filesystem->remove($warmupDir);
-        }
-
-        if ($output->isVerbose()) {
-            $io->comment('Warming up cache...');
-        }
-        $this->warmup($warmupDir, $realCacheDir, !$input->getOption('no-optional-warmers'));
-
-        $filesystem->rename($realCacheDir, $oldCacheDir);
-        if ('\\' === DIRECTORY_SEPARATOR) {
-            sleep(1);  // workaround for Windows PHP rename bug
-        }
-        $filesystem->rename($warmupDir, $realCacheDir);
-    }
-
     /**
      * @param string $warmupDir
      * @param string $realCacheDir
      * @param bool   $enableOptionalWarmers
-     *
-     * @internal to be removed in 4.0
      */
     protected function warmup($warmupDir, $realCacheDir, $enableOptionalWarmers = true)
     {
@@ -200,12 +185,9 @@ EOF
      * @param string          $warmupDir
      *
      * @return KernelInterface
-     *
-     * @internal to be removed in 4.0
      */
     protected function getTempKernel(KernelInterface $parent, $namespace, $parentClass, $warmupDir)
     {
-        $projectDir = '';
         $cacheDir = var_export($warmupDir, true);
         $rootDir = var_export(realpath($parent->getRootDir()), true);
         $logDir = var_export(realpath($parent->getLogDir()), true);
@@ -214,18 +196,6 @@ EOF
         $class = substr($parentClass, 0, -1).'_';
         // the temp container class must be changed too
         $containerClass = var_export(substr(get_class($parent->getContainer()), 0, -1).'_', true);
-
-        if (method_exists($parent, 'getProjectDir')) {
-            $projectDir = var_export(realpath($parent->getProjectDir()), true);
-            $projectDir = <<<EOF
-        public function getProjectDir()
-        {
-            return $projectDir;
-        }
-        
-EOF;
-        }
-
         $code = <<<EOF
 <?php
 
@@ -243,7 +213,6 @@ namespace $namespace
             return $rootDir;
         }
 
-        $projectDir
         public function getLogDir()
         {
             return $logDir;

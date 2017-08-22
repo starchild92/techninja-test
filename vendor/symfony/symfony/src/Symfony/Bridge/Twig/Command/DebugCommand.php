@@ -83,7 +83,9 @@ EOF
         $twig = $this->getTwigEnvironment();
 
         if (null === $twig) {
-            throw new \RuntimeException('The Twig environment needs to be set.');
+            $io->error('The Twig environment needs to be set.');
+
+            return 1;
         }
 
         $types = array('functions', 'filters', 'tests', 'globals');

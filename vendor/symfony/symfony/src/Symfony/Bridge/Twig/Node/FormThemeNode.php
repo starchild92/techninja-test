@@ -28,7 +28,7 @@ class FormThemeNode extends Node
     {
         $compiler
             ->addDebugInfo($this)
-            ->write('$this->env->getRuntime(\'Symfony\Bridge\Twig\Form\TwigRenderer\')->setTheme(')
+            ->write('$this->env->getExtension(\'Symfony\Bridge\Twig\Extension\FormExtension\')->renderer->setTheme(')
             ->subcompile($this->getNode('form'))
             ->raw(', ')
             ->subcompile($this->getNode('resources'))

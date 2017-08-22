@@ -14,7 +14,7 @@ namespace Symfony\Bundle\FrameworkBundle\Templating;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\SecurityContext;
 
 /**
  * GlobalVariables is the entry point for Symfony global variables in PHP templates.
@@ -34,20 +34,37 @@ class GlobalVariables
     }
 
     /**
-     * @return TokenInterface|null
+     * Returns the security context service.
+     *
+     * @deprecated since version 2.6, to be removed in 3.0.
+     *
+     * @return SecurityContext|null The security context
      */
-    public function getToken()
+    public function getSecurity()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.6 and will be removed in 3.0.', E_USER_DEPRECATED);
+
+        if ($this->container->has('security.context')) {
+            return $this->container->get('security.context');
+        }
+    }
+
+    /**
+     * Returns the current user.
+     *
+     * @return mixed
+     *
+     * @see TokenInterface::getUser()
+     */
+    public function getUser()
     {
         if (!$this->container->has('security.token_storage')) {
             return;
         }
 
-        return $this->container->get('security.token_storage')->getToken();
-    }
+        $tokenStorage = $this->container->get('security.token_storage');
 
-    public function getUser()
-    {
-        if (!$token = $this->getToken()) {
+        if (!$token = $tokenStorage->getToken()) {
             return;
         }
 
@@ -60,6 +77,8 @@ class GlobalVariables
     }
 
     /**
+     * Returns the current request.
+     *
      * @return Request|null The HTTP request object
      */
     public function getRequest()
@@ -70,6 +89,8 @@ class GlobalVariables
     }
 
     /**
+     * Returns the current session.
+     *
      * @return Session|null The session
      */
     public function getSession()
@@ -80,6 +101,8 @@ class GlobalVariables
     }
 
     /**
+     * Returns the current app environment.
+     *
      * @return string The current environment string (e.g 'dev')
      */
     public function getEnvironment()
@@ -88,6 +111,8 @@ class GlobalVariables
     }
 
     /**
+     * Returns the current app debug mode.
+     *
      * @return bool The current debug mode
      */
     public function getDebug()

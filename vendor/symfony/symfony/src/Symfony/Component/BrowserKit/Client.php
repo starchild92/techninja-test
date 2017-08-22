@@ -123,7 +123,7 @@ abstract class Client
     public function setServerParameters(array $server)
     {
         $this->server = array_merge(array(
-            'HTTP_USER_AGENT' => 'Symfony BrowserKit',
+            'HTTP_USER_AGENT' => 'Symfony2 BrowserKit',
         ), $server);
     }
 
@@ -475,7 +475,7 @@ abstract class Client
 
         $request = $this->internalRequest;
 
-        if (in_array($this->internalResponse->getStatus(), array(301, 302, 303))) {
+        if (in_array($this->internalResponse->getStatus(), array(302, 303))) {
             $method = 'GET';
             $files = array();
             $content = null;

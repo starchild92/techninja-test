@@ -57,6 +57,7 @@ class LintCommand extends Command
     protected function configure()
     {
         $this
+            ->setAliases(array('twig:lint'))
             ->setDescription('Lints a template and outputs encountered errors')
             ->addOption('format', null, InputOption::VALUE_REQUIRED, 'The output format', 'txt')
             ->addArgument('filename', InputArgument::IS_ARRAY)
@@ -86,8 +87,14 @@ EOF
     {
         $io = new SymfonyStyle($input, $output);
 
+        if (false !== strpos($input->getFirstArgument(), ':l')) {
+            $io->caution('The use of "twig:lint" command is deprecated since version 2.7 and will be removed in 3.0. Use the "lint:twig" instead.');
+        }
+
         if (null === $twig = $this->getTwigEnvironment()) {
-            throw new \RuntimeException('The Twig environment needs to be set.');
+            $io->error('The Twig environment needs to be set.');
+
+            return 1;
         }
 
         $filenames = $input->getArgument('filename');
@@ -199,7 +206,7 @@ EOF
             }
         });
 
-        $output->writeln(json_encode($filesInfo, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        $output->writeln(json_encode($filesInfo, defined('JSON_PRETTY_PRINT') ? JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES : 0));
 
         return min($errors, 1);
     }

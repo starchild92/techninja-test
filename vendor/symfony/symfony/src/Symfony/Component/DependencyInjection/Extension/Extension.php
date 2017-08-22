@@ -14,6 +14,7 @@ namespace Symfony\Component\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\Exception\BadMethodCallException;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
+use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -77,13 +78,17 @@ abstract class Extension implements ExtensionInterface, ConfigurationExtensionIn
      */
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
-        $class = get_class($this);
-        $class = substr_replace($class, '\Configuration', strrpos($class, '\\'));
-        $class = $container->getReflectionClass($class);
-        $constructor = $class ? $class->getConstructor() : null;
+        $reflected = new \ReflectionClass($this);
+        $namespace = $reflected->getNamespaceName();
 
-        if ($class && (!$constructor || !$constructor->getNumberOfRequiredParameters())) {
-            return $class->newInstance();
+        $class = $namespace.'\\Configuration';
+        if (class_exists($class)) {
+            $r = new \ReflectionClass($class);
+            $container->addResource(new FileResource($r->getFileName()));
+
+            if (!method_exists($class, '__construct')) {
+                return new $class();
+            }
         }
     }
 

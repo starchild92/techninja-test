@@ -11,10 +11,8 @@
 
 namespace Symfony\Bridge\Doctrine;
 
-use ProxyManager\Proxy\LazyLoadingInterface;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Doctrine\Common\Persistence\AbstractManagerRegistry;
 
 /**
@@ -24,7 +22,10 @@ use Doctrine\Common\Persistence\AbstractManagerRegistry;
  */
 abstract class ManagerRegistry extends AbstractManagerRegistry implements ContainerAwareInterface
 {
-    use ContainerAwareTrait;
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
 
     /**
      * {@inheritdoc}
@@ -39,35 +40,14 @@ abstract class ManagerRegistry extends AbstractManagerRegistry implements Contai
      */
     protected function resetService($name)
     {
-        if (!$this->container->initialized($name)) {
-            return;
-        }
-        $manager = $this->container->get($name);
+        $this->container->set($name, null);
+    }
 
-        if (!$manager instanceof LazyLoadingInterface) {
-            @trigger_error(sprintf('Resetting a non-lazy manager service is deprecated since Symfony 3.2 and will throw an exception in version 4.0. Set the "%s" service as lazy and require "symfony/proxy-manager-bridge" in your composer.json file instead.', $name), E_USER_DEPRECATED);
-
-            $this->container->set($name, null);
-
-            return;
-        }
-        $manager->setProxyInitializer(\Closure::bind(
-            function (&$wrappedInstance, LazyLoadingInterface $manager) use ($name) {
-                if (isset($this->normalizedIds[$normalizedId = strtolower($name)])) {
-                    $name = $this->normalizedIds[$normalizedId];
-                }
-                if (isset($this->aliases[$name])) {
-                    $name = $this->aliases[$name];
-                }
-                $method = !isset($this->methodMap[$name]) ? 'get'.strtr($name, $this->underscoreMap).'Service' : $this->methodMap[$name];
-                $wrappedInstance = $this->{$method}(false);
-
-                $manager->setProxyInitializer(null);
-
-                return true;
-            },
-            $this->container,
-            Container::class
-        ));
+    /**
+     * {@inheritdoc}
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
     }
 }

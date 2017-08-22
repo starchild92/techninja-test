@@ -50,7 +50,7 @@ class EnvParametersResource implements SelfCheckingResourceInterface, \Serializa
     }
 
     /**
-     * @return array An array with two keys: 'prefix' for the prefix used and 'variables' containing all the variables watched by this resource
+     * {@inheritdoc}
      */
     public function getResource()
     {
@@ -72,11 +72,7 @@ class EnvParametersResource implements SelfCheckingResourceInterface, \Serializa
 
     public function unserialize($serialized)
     {
-        if (\PHP_VERSION_ID >= 70000) {
-            $unserialized = unserialize($serialized, array('allowed_classes' => false));
-        } else {
-            $unserialized = unserialize($serialized);
-        }
+        $unserialized = unserialize($serialized);
 
         $this->prefix = $unserialized['prefix'];
         $this->variables = $unserialized['variables'];

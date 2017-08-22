@@ -11,9 +11,7 @@
 
 namespace SensioLabs\Security\Crawler;
 
-use Composer\CaBundle\CaBundle;
 use SensioLabs\Security\Exception\RuntimeException;
-use SensioLabs\Security\SecurityChecker;
 
 /**
  * @internal
@@ -30,15 +28,14 @@ class FileGetContentsCrawler extends BaseCrawler
             'http' => array(
                 'method' => 'POST',
                 'header' => "Content-Type: multipart/form-data; boundary=$boundary\r\nAccept: application/json",
-                'content' => "--$boundary\r\nContent-Disposition: form-data; name=\"lock\"; filename=\"$lock\"\r\nContent-Type: application/octet-stream\r\n\r\n".$this->getLockContents($lock)."\r\n--$boundary--\r\n",
+                'content' => "--$boundary\r\nContent-Disposition: form-data; name=\"lock\"; filename=\"$lock\"\r\nContent-Type: application/octet-stream\r\n\r\n".file_get_contents($lock)."\r\n--$boundary\r\n--\r\n",
                 'ignore_errors' => true,
                 'follow_location' => true,
                 'max_redirects' => 3,
                 'timeout' => $this->timeout,
-                'user_agent' => sprintf('SecurityChecker-CLI/%s FGC PHP', SecurityChecker::VERSION),
+                'user_agent' => 'SecurityChecker-CLI/3 FGC PHP',
             ),
             'ssl' => array(
-                'cafile' => CaBundle::getSystemCaRootBundlePath(),
                 'verify_peer' => 1,
                 'verify_host' => 2,
             ),

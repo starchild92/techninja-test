@@ -11,7 +11,6 @@
 
 namespace Symfony\Bundle\WebProfilerBundle\Controller;
 
-use Symfony\Bundle\WebProfilerBundle\Csp\ContentSecurityPolicyHandler;
 use Symfony\Bundle\WebProfilerBundle\Profiler\TemplateManager;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,29 +34,23 @@ class ProfilerController
     private $twig;
     private $templates;
     private $toolbarPosition;
-    private $cspHandler;
-    private $baseDir;
 
     /**
      * Constructor.
      *
-     * @param UrlGeneratorInterface        $generator       The URL Generator
-     * @param Profiler                     $profiler        The profiler
-     * @param Environment                  $twig            The twig environment
-     * @param array                        $templates       The templates
-     * @param string                       $toolbarPosition The toolbar position (top, bottom, normal, or null -- use the configuration)
-     * @param ContentSecurityPolicyHandler $cspHandler      The Content-Security-Policy handler
-     * @param string                       $baseDir         The project root directory
+     * @param UrlGeneratorInterface $generator       The URL Generator
+     * @param Profiler              $profiler        The profiler
+     * @param Environment           $twig            The twig environment
+     * @param array                 $templates       The templates
+     * @param string                $toolbarPosition The toolbar position (top, bottom, normal, or null -- use the configuration)
      */
-    public function __construct(UrlGeneratorInterface $generator, Profiler $profiler = null, Environment $twig, array $templates, $toolbarPosition = 'bottom', ContentSecurityPolicyHandler $cspHandler = null, $baseDir = null)
+    public function __construct(UrlGeneratorInterface $generator, Profiler $profiler = null, Environment $twig, array $templates, $toolbarPosition = 'bottom')
     {
         $this->generator = $generator;
         $this->profiler = $profiler;
         $this->twig = $twig;
         $this->templates = $templates;
         $this->toolbarPosition = $toolbarPosition;
-        $this->cspHandler = $cspHandler;
-        $this->baseDir = $baseDir;
     }
 
     /**
@@ -96,10 +89,6 @@ class ProfilerController
 
         $this->profiler->disable();
 
-        if (null !== $this->cspHandler) {
-            $this->cspHandler->disableCsp();
-        }
-
         $panel = $request->query->get('panel', 'request');
         $page = $request->query->get('page', 'home');
 
@@ -125,6 +114,51 @@ class ProfilerController
             'templates' => $this->getTemplateManager()->getNames($profile),
             'is_ajax' => $request->isXmlHttpRequest(),
             'profiler_markup_version' => 2, // 1 = original profiler, 2 = Symfony 2.8+ profiler
+        )), 200, array('Content-Type' => 'text/html'));
+    }
+
+    /**
+     * Purges all tokens.
+     *
+     * @return Response A Response instance
+     *
+     * @throws NotFoundHttpException
+     */
+    public function purgeAction()
+    {
+        @trigger_error('The '.__METHOD__.' method is deprecated since version 2.8 and will be removed in 3.0.', E_USER_DEPRECATED);
+
+        if (null === $this->profiler) {
+            throw new NotFoundHttpException('The profiler must be enabled.');
+        }
+
+        $this->profiler->disable();
+        $this->profiler->purge();
+
+        return new RedirectResponse($this->generator->generate('_profiler_info', array('about' => 'purge')), 302, array('Content-Type' => 'text/html'));
+    }
+
+    /**
+     * Displays information page.
+     *
+     * @param Request $request The current HTTP Request
+     * @param string  $about   The about message
+     *
+     * @return Response A Response instance
+     *
+     * @throws NotFoundHttpException
+     */
+    public function infoAction(Request $request, $about)
+    {
+        if (null === $this->profiler) {
+            throw new NotFoundHttpException('The profiler must be enabled.');
+        }
+
+        $this->profiler->disable();
+
+        return new Response($this->twig->render('@WebProfiler/Profiler/info.html.twig', array(
+            'about' => $about,
+            'request' => $request,
         )), 200, array('Content-Type' => 'text/html'));
     }
 
@@ -173,7 +207,7 @@ class ProfilerController
             // the profiler is not enabled
         }
 
-        return $this->renderWithCspNonces($request, '@WebProfiler/Profiler/toolbar.html.twig', array(
+        return new Response($this->twig->render('@WebProfiler/Profiler/toolbar.html.twig', array(
             'request' => $request,
             'position' => $position,
             'profile' => $profile,
@@ -181,7 +215,7 @@ class ProfilerController
             'profiler_url' => $url,
             'token' => $token,
             'profiler_markup_version' => 2, // 1 = original toolbar, 2 = Symfony 2.8+ toolbar
-        ));
+        )), 200, array('Content-Type' => 'text/html'));
     }
 
     /**
@@ -201,14 +235,9 @@ class ProfilerController
 
         $this->profiler->disable();
 
-        if (null !== $this->cspHandler) {
-            $this->cspHandler->disableCsp();
-        }
-
         if (null === $session = $request->getSession()) {
             $ip =
             $method =
-            $statusCode =
             $url =
             $start =
             $end =
@@ -217,7 +246,6 @@ class ProfilerController
         } else {
             $ip = $request->query->get('ip', $session->get('_profiler_search_ip'));
             $method = $request->query->get('method', $session->get('_profiler_search_method'));
-            $statusCode = $request->query->get('status_code', $session->get('_profiler_search_status_code'));
             $url = $request->query->get('url', $session->get('_profiler_search_url'));
             $start = $request->query->get('start', $session->get('_profiler_search_start'));
             $end = $request->query->get('end', $session->get('_profiler_search_end'));
@@ -230,7 +258,6 @@ class ProfilerController
                 'token' => $token,
                 'ip' => $ip,
                 'method' => $method,
-                'status_code' => $statusCode,
                 'url' => $url,
                 'start' => $start,
                 'end' => $end,
@@ -260,15 +287,10 @@ class ProfilerController
 
         $this->profiler->disable();
 
-        if (null !== $this->cspHandler) {
-            $this->cspHandler->disableCsp();
-        }
-
         $profile = $this->profiler->loadProfile($token);
 
         $ip = $request->query->get('ip');
         $method = $request->query->get('method');
-        $statusCode = $request->query->get('status_code');
         $url = $request->query->get('url');
         $start = $request->query->get('start', null);
         $end = $request->query->get('end', null);
@@ -278,10 +300,9 @@ class ProfilerController
             'request' => $request,
             'token' => $token,
             'profile' => $profile,
-            'tokens' => $this->profiler->find($ip, $url, $limit, $method, $start, $end, $statusCode),
+            'tokens' => $this->profiler->find($ip, $url, $limit, $method, $start, $end),
             'ip' => $ip,
             'method' => $method,
-            'status_code' => $statusCode,
             'url' => $url,
             'start' => $start,
             'end' => $end,
@@ -309,7 +330,6 @@ class ProfilerController
 
         $ip = preg_replace('/[^:\d\.]/', '', $request->query->get('ip'));
         $method = $request->query->get('method');
-        $statusCode = $request->query->get('status_code');
         $url = $request->query->get('url');
         $start = $request->query->get('start', null);
         $end = $request->query->get('end', null);
@@ -319,7 +339,6 @@ class ProfilerController
         if (null !== $session = $request->getSession()) {
             $session->set('_profiler_search_ip', $ip);
             $session->set('_profiler_search_method', $method);
-            $session->set('_profiler_search_status_code', $statusCode);
             $session->set('_profiler_search_url', $url);
             $session->set('_profiler_search_start', $start);
             $session->set('_profiler_search_end', $end);
@@ -331,13 +350,12 @@ class ProfilerController
             return new RedirectResponse($this->generator->generate('_profiler', array('token' => $token)), 302, array('Content-Type' => 'text/html'));
         }
 
-        $tokens = $this->profiler->find($ip, $url, $limit, $method, $start, $end, $statusCode);
+        $tokens = $this->profiler->find($ip, $url, $limit, $method, $start, $end);
 
         return new RedirectResponse($this->generator->generate('_profiler_search_results', array(
             'token' => $tokens ? $tokens[0]['token'] : 'empty',
             'ip' => $ip,
             'method' => $method,
-            'status_code' => $statusCode,
             'url' => $url,
             'start' => $start,
             'end' => $end,
@@ -360,48 +378,11 @@ class ProfilerController
 
         $this->profiler->disable();
 
-        if (null !== $this->cspHandler) {
-            $this->cspHandler->disableCsp();
-        }
-
         ob_start();
         phpinfo();
         $phpinfo = ob_get_clean();
 
         return new Response($phpinfo, 200, array('Content-Type' => 'text/html'));
-    }
-
-    /**
-     * Displays the source of a file.
-     *
-     * @return Response A Response instance
-     *
-     * @throws NotFoundHttpException
-     */
-    public function openAction(Request $request)
-    {
-        if (null === $this->baseDir) {
-            throw new NotFoundHttpException('The base dir should be set.');
-        }
-
-        if ($this->profiler) {
-            $this->profiler->disable();
-        }
-
-        $file = $request->query->get('file');
-        $line = $request->query->get('line');
-
-        $filename = $this->baseDir.DIRECTORY_SEPARATOR.$file;
-
-        if (preg_match("'(^|[/\\\\])\.\.?([/\\\\]|$)'", $file) || !is_readable($filename)) {
-            throw new NotFoundHttpException(sprintf('The file "%s" cannot be opened.', $file));
-        }
-
-        return new Response($this->twig->render('@WebProfiler/Profiler/open.html.twig', array(
-            'filename' => $filename,
-            'file' => $file,
-            'line' => $line,
-         )), 200, array('Content-Type' => 'text/html'));
     }
 
     /**
@@ -416,19 +397,5 @@ class ProfilerController
         }
 
         return $this->templateManager;
-    }
-
-    private function renderWithCspNonces(Request $request, $template, $variables, $code = 200, $headers = array('Content-Type' => 'text/html'))
-    {
-        $response = new Response('', $code, $headers);
-
-        $nonces = $this->cspHandler ? $this->cspHandler->getNonces($request, $response) : array();
-
-        $variables['csp_script_nonce'] = isset($nonces['csp_script_nonce']) ? $nonces['csp_script_nonce'] : null;
-        $variables['csp_style_nonce'] = isset($nonces['csp_style_nonce']) ? $nonces['csp_style_nonce'] : null;
-
-        $response->setContent($this->twig->render($template, $variables));
-
-        return $response;
     }
 }

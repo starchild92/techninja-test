@@ -11,15 +11,12 @@
 
 namespace Symfony\Bundle\TwigBundle\DependencyInjection;
 
-use Symfony\Bridge\Twig\Extension\WebLinkExtension;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Config\Resource\FileExistenceResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\WebLink\HttpHeaderSerializer;
-use Twig\Extension\ExtensionInterface;
-use Twig\Loader\LoaderInterface;
 
 /**
  * TwigExtension.
@@ -50,13 +47,6 @@ class TwigExtension extends Extension
 
         if (!interface_exists('Symfony\Component\Translation\TranslatorInterface')) {
             $container->removeDefinition('twig.translation.extractor');
-        }
-
-        if (class_exists(HttpHeaderSerializer::class)) {
-            $definition = $container->register('twig.extension.weblink', WebLinkExtension::class);
-            $definition->setPublic(false);
-            $definition->addArgument(new Reference('request_stack'));
-            $definition->addTag('twig.extension');
         }
 
         foreach ($configs as $key => $config) {
@@ -118,9 +108,10 @@ class TwigExtension extends Extension
             }
         }
 
-        if ($container->fileExists($dir = $container->getParameter('kernel.root_dir').'/Resources/views', false)) {
+        if (is_dir($dir = $container->getParameter('kernel.root_dir').'/Resources/views')) {
             $twigFilesystemLoaderDefinition->addMethodCall('addPath', array($dir));
         }
+        $container->addResource(new FileExistenceResource($dir));
 
         if (!empty($config['globals'])) {
             $def = $container->getDefinition('twig');
@@ -146,23 +137,16 @@ class TwigExtension extends Extension
 
         $container->getDefinition('twig')->replaceArgument(1, $config);
 
-        $container->registerForAutoconfiguration(\Twig_ExtensionInterface::class)->addTag('twig.extension');
-        $container->registerForAutoconfiguration(\Twig_LoaderInterface::class)->addTag('twig.loader');
-        $container->registerForAutoconfiguration(ExtensionInterface::class)->addTag('twig.extension');
-        $container->registerForAutoconfiguration(LoaderInterface::class)->addTag('twig.loader');
-
-        if (\PHP_VERSION_ID < 70000) {
-            $this->addClassesToCompile(array(
-                'Twig_Environment',
-                'Twig_Extension',
-                'Twig_Extension_Core',
-                'Twig_Extension_Escaper',
-                'Twig_Extension_Optimizer',
-                'Twig_LoaderInterface',
-                'Twig_Markup',
-                'Twig_Template',
-            ));
-        }
+        $this->addClassesToCompile(array(
+            'Twig_Environment',
+            'Twig_Extension',
+            'Twig_Extension_Core',
+            'Twig_Extension_Escaper',
+            'Twig_Extension_Optimizer',
+            'Twig_LoaderInterface',
+            'Twig_Markup',
+            'Twig_Template',
+        ));
     }
 
     private function getBundleHierarchy(ContainerBuilder $container)
@@ -178,13 +162,15 @@ class TwigExtension extends Extension
                 );
             }
 
-            if ($container->fileExists($dir = $container->getParameter('kernel.root_dir').'/Resources/'.$name.'/views', false)) {
+            if (is_dir($dir = $container->getParameter('kernel.root_dir').'/Resources/'.$name.'/views')) {
                 $bundleHierarchy[$name]['paths'][] = $dir;
             }
+            $container->addResource(new FileExistenceResource($dir));
 
-            if ($container->fileExists($dir = $bundle['path'].'/Resources/views', false)) {
+            if (is_dir($dir = $bundle['path'].'/Resources/views')) {
                 $bundleHierarchy[$name]['paths'][] = $dir;
             }
+            $container->addResource(new FileExistenceResource($dir));
 
             if (null === $bundle['parent']) {
                 continue;

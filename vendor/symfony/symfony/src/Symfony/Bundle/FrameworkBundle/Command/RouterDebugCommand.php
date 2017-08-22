@@ -12,13 +12,11 @@
 namespace Symfony\Bundle\FrameworkBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Console\Helper\DescriptorHelper;
-use Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Routing\Route;
 
@@ -53,6 +51,9 @@ class RouterDebugCommand extends ContainerAwareCommand
     {
         $this
             ->setName('debug:router')
+            ->setAliases(array(
+                'router:debug',
+            ))
             ->setDefinition(array(
                 new InputArgument('name', InputArgument::OPTIONAL, 'A route name'),
                 new InputOption('show-controllers', null, InputOption::VALUE_NONE, 'Show assigned controllers in overview'),
@@ -78,6 +79,11 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
+
+        if (false !== strpos($input->getFirstArgument(), ':d')) {
+            $io->caution('The use of "router:debug" command is deprecated since version 2.7 and will be removed in 3.0. Use the "debug:router" instead.');
+        }
+
         $name = $input->getArgument('name');
         $helper = new DescriptorHelper();
         $routes = $this->getContainer()->get('router')->getRouteCollection();
@@ -87,14 +93,13 @@ EOF
                 throw new \InvalidArgumentException(sprintf('The route "%s" does not exist.', $name));
             }
 
-            $callable = $this->extractCallable($route);
+            $this->convertController($route);
 
             $helper->describe($io, $route, array(
                 'format' => $input->getOption('format'),
                 'raw_text' => $input->getOption('raw'),
                 'name' => $name,
                 'output' => $io,
-                'callable' => $callable,
             ));
         } else {
             foreach ($routes as $route) {
@@ -112,38 +117,12 @@ EOF
 
     private function convertController(Route $route)
     {
+        $nameParser = $this->getContainer()->get('controller_name_converter');
         if ($route->hasDefault('_controller')) {
-            $nameParser = new ControllerNameParser($this->getApplication()->getKernel());
             try {
                 $route->setDefault('_controller', $nameParser->build($route->getDefault('_controller')));
             } catch (\InvalidArgumentException $e) {
             }
-        }
-    }
-
-    private function extractCallable(Route $route)
-    {
-        if (!$route->hasDefault('_controller')) {
-            return;
-        }
-
-        $controller = $route->getDefault('_controller');
-
-        if (1 === substr_count($controller, ':')) {
-            list($service, $method) = explode(':', $controller);
-            try {
-                return sprintf('%s::%s', get_class($this->getContainer()->get($service)), $method);
-            } catch (ServiceNotFoundException $e) {
-            }
-        }
-
-        $nameParser = new ControllerNameParser($this->getApplication()->getKernel());
-        try {
-            $shortNotation = $nameParser->build($controller);
-            $route->setDefault('_controller', $shortNotation);
-
-            return $controller;
-        } catch (\InvalidArgumentException $e) {
         }
     }
 }
