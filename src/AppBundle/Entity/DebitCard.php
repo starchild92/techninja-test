@@ -40,6 +40,11 @@ class DebitCard
      */
     private $bank;
 
+    /**
+    * @ORM\ManyToOne(targetEntity="Account", inversedBy="debitcard", cascade={"persist"})
+    * @ORM\JoinColumn(name="account_id", referencedColumnName="id", onDelete="CASCADE")
+    **/
+    private $account;
 
     /**
      * Get id
@@ -118,5 +123,28 @@ class DebitCard
     public function getOwnedby()
     {
         return $this->ownedby;
+    }
+
+    /**
+     * Set account
+     *
+     * @param \AppBundle\Entity\Account $account
+     * @return DebitCard
+     */
+    public function setAccount(\AppBundle\Entity\Account $account = null)
+    {
+        $this->account = $account;
+
+        return $this;
+    }
+
+    /**
+     * Get account
+     *
+     * @return \AppBundle\Entity\Account 
+     */
+    public function getAccount()
+    {
+        return $this->account;
     }
 }

@@ -36,11 +36,20 @@ class Account
     private $type;
 
     /**
-     *
      * @ORM\OneToOne(targetEntity="Customer", inversedBy="account")
      * @ORM\JoinColumn(name="customer_id", referencedColumnName="id")
      */
     private $owner;
+
+    /**
+    * @ORM\OneToMany(targetEntity="DebitCard", mappedBy="account", cascade={"persist", "remove"}, orphanRemoval=true)
+    **/
+    private $debitcard;
+
+    public function __toString()
+    {
+        return $this->number;
+    }
 
     /**
      * Get id
@@ -119,5 +128,45 @@ class Account
     public function getOwner()
     {
         return $this->owner;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->debitcard = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add debitcard
+     *
+     * @param \AppBundle\Entity\DebitCard $debitcard
+     * @return Account
+     */
+    public function addDebitcard(\AppBundle\Entity\DebitCard $debitcard)
+    {
+        $this->debitcard[] = $debitcard;
+
+        return $this;
+    }
+
+    /**
+     * Remove debitcard
+     *
+     * @param \AppBundle\Entity\DebitCard $debitcard
+     */
+    public function removeDebitcard(\AppBundle\Entity\DebitCard $debitcard)
+    {
+        $this->debitcard->removeElement($debitcard);
+    }
+
+    /**
+     * Get debitcard
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getDebitcard()
+    {
+        return $this->debitcard;
     }
 }
