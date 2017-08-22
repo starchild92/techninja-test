@@ -1,0 +1,15 @@
+app_bank:
+    resource: "@AppBundle/Resources/config/routing/bank.yml"
+    prefix:   /bank
+
+app_customer:
+   resource: "@AppBundle/Resources/config/routing/customer.yml"
+   prefix:   /customer
+
+app_account:
+    resource: "@AppBundle/Resources/config/routing/account.yml"
+    prefix:   /account
+
+app_debitcard:
+    resource: "@AppBundle/Resources/config/routing/debitcard.yml"
+    prefix:   /debitcard

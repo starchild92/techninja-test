@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Debitcards list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Cardno</th>
+                <th>Ownedby</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for debitCard in debitCards %}
+            <tr>
+                <td><a href="{{ path('debitcard_show', { 'id': debitCard.id }) }}">{{ debitCard.id }}</a></td>
+                <td>{{ debitCard.cardno }}</td>
+                <td>{{ debitCard.ownedby }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('debitcard_show', { 'id': debitCard.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('debitcard_edit', { 'id': debitCard.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('debitcard_new') }}">Create a new debitCard</a>
+        </li>
+    </ul>
+{% endblock %}
