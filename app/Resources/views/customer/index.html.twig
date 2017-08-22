@@ -3,13 +3,14 @@
 {% block body %}
     <h1>Customers list</h1>
 
-    <table>
+    <table class="table table-stripped">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Name</th>
                 <th>Address</th>
                 <th>Dob</th>
+                <th>Account</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -20,6 +21,7 @@
                 <td>{{ customer.name }}</td>
                 <td>{{ customer.address }}</td>
                 <td>{% if customer.dob %}{{ customer.dob|date('Y-m-d') }}{% endif %}</td>
+                <td><a href="{{ path('account_show',{ 'id' : customer.account.id }) }}">{{ customer.account }} <i class="fa fa-link"></i></a> </td>
                 <td>
                     <ul>
                         <li>
