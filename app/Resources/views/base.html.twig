@@ -25,16 +25,25 @@
 				</div>
 				<div class="navbar-collapse collapse" id="navbar-main">
 					<ul class="nav navbar-nav">
-						<li class="dropdown">
+						{# <li class="dropdown">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes">Themes <span class="caret"></span></a>
 							<ul class="dropdown-menu" aria-labelledby="themes">
 								<li><a href="../default/">Default</a></li>
 								<li class="divider"></li>
 								<li><a href="../cerulean/">Cerulean</a></li>
 							</ul>
+						</li> #}
+						<li>
+							<a href="{{ path('bank_index') }}">Banks</a>
 						</li>
 						<li>
-							<a href="http://news.bootswatch.com">Blog</a>
+							<a href="{{ path('customer_index') }}">Customers</a>
+						</li>
+						<li>
+							<a href="{{ path('account_index') }}">Accounts</a>
+						</li>
+						<li>
+							<a href="{{ path('debitcard_index') }}">Debit Cards</a>
 						</li>
 						{# <li class="dropdown">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="download">Simplex <span class="caret"></span></a>
@@ -64,8 +73,8 @@
 		<div class="container">
 			{% block body %}{% endblock %}
 		</div>
-		{% block javascripts %}{% endblock %}
 		<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+		{% block javascripts %}{% endblock %}
 		<script src="https://use.fontawesome.com/20fc5ad78d.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 	</body>
