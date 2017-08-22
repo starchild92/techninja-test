@@ -3,10 +3,11 @@
 {% block body %}
     <h1>Banks list</h1>
 
-    <table>
+    <table class="table table-stripped">
         <thead>
             <tr>
                 <th>Id</th>
+                <th>Name</th>
                 <th>Code</th>
                 <th>Address</th>
                 <th>Actions</th>
@@ -16,6 +17,7 @@
         {% for bank in banks %}
             <tr>
                 <td><a href="{{ path('bank_show', { 'id': bank.id }) }}">{{ bank.id }}</a></td>
+                <td>{{ bank.name }}</td>
                 <td>{{ bank.code }}</td>
                 <td>{{ bank.address }}</td>
                 <td>

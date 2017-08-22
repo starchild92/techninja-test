@@ -3,10 +3,11 @@
 {% block body %}
     <h1>Debitcards list</h1>
 
-    <table>
+    <table class="table table-stripped">
         <thead>
             <tr>
                 <th>Id</th>
+                <th>bank</th>
                 <th>Cardno</th>
                 <th>Ownedby</th>
                 <th>Actions</th>
@@ -16,6 +17,7 @@
         {% for debitCard in debitCards %}
             <tr>
                 <td><a href="{{ path('debitcard_show', { 'id': debitCard.id }) }}">{{ debitCard.id }}</a></td>
+                <td>{{ debitCard.bank }}</td>
                 <td>{{ debitCard.cardno }}</td>
                 <td>{{ debitCard.ownedby }}</td>
                 <td>
