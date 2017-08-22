@@ -50,12 +50,14 @@ class CustomerController extends Controller
             $cad = md5($customer->getId().$customer->getName().$customer->getDob()->format('d-M-Y'));
             $cad = substr($cad, 0, 20);
             $account->setNumber($cad);
-            $account->setType('saving'); //saving or 
+            $account->setType('Saving'); //saving or checking
+            $account->addDebitcard($debitc);
 
             //Agregando Tarjeta de Debito enlazada al Banco y a la Cuenta
             $debitc->setCardno(str_pad(rand(0, pow(10, 20)-1), 20, '0', STR_PAD_LEFT));
             $debitc->setOwnedby($customer);
             $debitc->setBank($customer->getBank());
+            $debitc->setAccount($account);
 
             $em->persist($customer);
             $em->persist($account);
