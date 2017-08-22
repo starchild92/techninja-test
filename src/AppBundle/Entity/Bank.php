@@ -31,10 +31,25 @@ class Bank
     /**
      * @var string
      *
+     * @ORM\Column(name="name", type="string", length=255)
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="address", type="text", nullable=true)
      */
     private $address;
 
+    /**
+     * @ORM\OneToMany(targetEntity="DebitCard", mappedBy="bank", cascade={"persist", "remove"}, orphanRemoval=true)
+     **/
+    private $debitcards;
+
+    public function __toString(){
+        return $this->name.' ('.$this->code.')';
+    }
 
     /**
      * Get id
@@ -90,5 +105,68 @@ class Bank
     public function getAddress()
     {
         return $this->address;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->debitcards = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add debitcards
+     *
+     * @param \AppBundle\Entity\DebitCard $debitcards
+     * @return Bank
+     */
+    public function addDebitcard(\AppBundle\Entity\DebitCard $debitcards)
+    {
+        $this->debitcards[] = $debitcards;
+
+        return $this;
+    }
+
+    /**
+     * Remove debitcards
+     *
+     * @param \AppBundle\Entity\DebitCard $debitcards
+     */
+    public function removeDebitcard(\AppBundle\Entity\DebitCard $debitcards)
+    {
+        $this->debitcards->removeElement($debitcards);
+    }
+
+    /**
+     * Get debitcards
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getDebitcards()
+    {
+        return $this->debitcards;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return Bank
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 }

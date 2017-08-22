@@ -3,6 +3,8 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Customer;
+use AppBundle\Entity\DebitCard;
+use AppBundle\Entity\Account;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -34,12 +36,30 @@ class CustomerController extends Controller
     public function newAction(Request $request)
     {
         $customer = new Customer();
+        $account = new Account();
+        $debitc = new DebitCard();
+
         $form = $this->createForm('AppBundle\Form\CustomerType', $customer);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+            
+            //Agregando cuenta enlazada con el cliente
+            $account->setOwner($customer);
+            $cad = md5($customer->getId().$customer->getName().$customer->getDob()->format('d-M-Y'));
+            $cad = substr($cad, 0, 20);
+            $account->setNumber($cad);
+            $account->setType('saving'); //saving or 
+
+            //Agregando Tarjeta de Debito enlazada al Banco y a la Cuenta
+            $debitc->setCardno(str_pad(rand(0, pow(10, 20)-1), 20, '0', STR_PAD_LEFT));
+            $debitc->setOwnedby($customer);
+            $debitc->setBank($customer->getBank());
+
             $em->persist($customer);
+            $em->persist($account);
+            $em->persist($debitc);
             $em->flush();
 
             return $this->redirectToRoute('customer_show', array('id' => $customer->getId()));
@@ -99,6 +119,11 @@ class CustomerController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+
+            //eliminando cuenta y tarjeta de debito
+            // $customer->setBank(null);
+            // $customer->setAccount(null);
+
             $em->remove($customer);
             $em->flush();
         }

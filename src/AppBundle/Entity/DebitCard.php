@@ -29,11 +29,16 @@ class DebitCard
     private $cardno;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="ownedby", type="string", length=255)
-     */
+    * @ORM\OneToOne(targetEntity="Customer",)
+    * @ORM\JoinColumn(name="customer_id", referencedColumnName="id")
+    **/
     private $ownedby;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Bank", inversedBy="debitcards", cascade={"persist"})
+     * @ORM\JoinColumn(name="bank_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $bank;
 
 
     /**
@@ -70,12 +75,35 @@ class DebitCard
     }
 
     /**
-     * Set ownedby
+     * Set bank
      *
-     * @param string $ownedby
+     * @param \AppBundle\Entity\Bank $bank
      * @return DebitCard
      */
-    public function setOwnedby($ownedby)
+    public function setBank(\AppBundle\Entity\Bank $bank = null)
+    {
+        $this->bank = $bank;
+
+        return $this;
+    }
+
+    /**
+     * Get bank
+     *
+     * @return \AppBundle\Entity\Bank 
+     */
+    public function getBank()
+    {
+        return $this->bank;
+    }
+
+    /**
+     * Set ownedby
+     *
+     * @param \AppBundle\Entity\Customer $ownedby
+     * @return DebitCard
+     */
+    public function setOwnedby(\AppBundle\Entity\Customer $ownedby = null)
     {
         $this->ownedby = $ownedby;
 
@@ -85,7 +113,7 @@ class DebitCard
     /**
      * Get ownedby
      *
-     * @return string 
+     * @return \AppBundle\Entity\Customer 
      */
     public function getOwnedby()
     {

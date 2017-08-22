@@ -24,17 +24,23 @@ class Account
     /**
      * @var string
      *
+     * @ORM\Column(name="number", type="string", length=20, nullable=false, unique=true)
+     */
+    private $number;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="type", type="string", length=255)
      */
     private $type;
 
     /**
-     * @var string
      *
-     * @ORM\Column(name="owner", type="string", length=255)
+     * @ORM\OneToOne(targetEntity="Customer", inversedBy="account")
+     * @ORM\JoinColumn(name="customer_id", referencedColumnName="id")
      */
     private $owner;
-
 
     /**
      * Get id
@@ -44,6 +50,29 @@ class Account
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set number
+     *
+     * @param string $number
+     * @return Account
+     */
+    public function setNumber($number)
+    {
+        $this->number = $number;
+
+        return $this;
+    }
+
+    /**
+     * Get number
+     *
+     * @return string 
+     */
+    public function getNumber()
+    {
+        return $this->number;
     }
 
     /**
@@ -72,10 +101,10 @@ class Account
     /**
      * Set owner
      *
-     * @param string $owner
+     * @param \AppBundle\Entity\Customer $owner
      * @return Account
      */
-    public function setOwner($owner)
+    public function setOwner(\AppBundle\Entity\Customer $owner = null)
     {
         $this->owner = $owner;
 
@@ -85,7 +114,7 @@ class Account
     /**
      * Get owner
      *
-     * @return string 
+     * @return \AppBundle\Entity\Customer 
      */
     public function getOwner()
     {

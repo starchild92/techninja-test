@@ -39,6 +39,13 @@ class BankController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+
+            $debitcards = $bank->getDebitcards();
+            foreach ($debitcards as $dc) {
+                $dc->setBank($bank);
+                $em->persist($dc);
+            }
+
             $em->persist($bank);
             $em->flush();
 
@@ -76,6 +83,13 @@ class BankController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
+            
+            $debitcards = $bank->getDebitcards();
+            foreach ($debitcards as $dc) {
+                $dc->setBank($bank);
+                $this->getDoctrine()->getManager()->persist($dc);
+            }
+
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('bank_edit', array('id' => $bank->getId()));

@@ -31,6 +31,13 @@ class Customer
     /**
      * @var string
      *
+     * @ORM\Column(name="lastname", type="string", length=255)
+     */
+    private $lastname;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="address", type="string", length=255)
      */
     private $address;
@@ -42,6 +49,20 @@ class Customer
      */
     private $dob;
 
+    /**
+     * @ORM\OneToOne(targetEntity="Bank", cascade={"persist"})
+     * @ORM\JoinColumn(name="bank_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $bank;
+
+    /**
+    * @ORM\OneToOne(targetEntity="Account", mappedBy="owner", cascade={"remove"})
+    **/
+    private $account;
+
+    public function __toString(){
+        return $this->name.' '.$this->lastname;
+    }
 
     /**
      * Get id
@@ -120,5 +141,74 @@ class Customer
     public function getDob()
     {
         return $this->dob;
+    }
+
+    /**
+     * Set bank
+     *
+     * @param \AppBundle\Entity\Bank $bank
+     * @return Customer
+     */
+    public function setBank(\AppBundle\Entity\Bank $bank = null)
+    {
+        $this->bank = $bank;
+
+        return $this;
+    }
+
+    /**
+     * Get bank
+     *
+     * @return \AppBundle\Entity\Bank 
+     */
+    public function getBank()
+    {
+        return $this->bank;
+    }
+
+    /**
+     * Set account
+     *
+     * @param \AppBundle\Entity\Account $account
+     * @return Customer
+     */
+    public function setAccount(\AppBundle\Entity\Account $account = null)
+    {
+        $this->account = $account;
+
+        return $this;
+    }
+
+    /**
+     * Get account
+     *
+     * @return \AppBundle\Entity\Account 
+     */
+    public function getAccount()
+    {
+        return $this->account;
+    }
+
+    /**
+     * Set lastname
+     *
+     * @param string $lastname
+     * @return Customer
+     */
+    public function setLastname($lastname)
+    {
+        $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    /**
+     * Get lastname
+     *
+     * @return string 
+     */
+    public function getLastname()
+    {
+        return $this->lastname;
     }
 }
