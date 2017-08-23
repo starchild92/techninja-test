@@ -17,7 +17,7 @@
 	</head>
 	<body>
 		<div class="navbar navbar-inverse navbar-fixed-top">
-			<div class="container">
+			<div class="container-fluid">
 				<div class="navbar-header">
 					<a href="../" class="navbar-brand">TechMaker Project</a>
 					<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
@@ -37,16 +37,16 @@
 							</ul>
 						</li> #}
 						<li>
-							<a href="{{ path('bank_index') }}">Banks</a>
+							<a href="{{ path('bank_index') }}"><i class="fa fa-bank"></i> Banks</a>
 						</li>
 						<li>
-							<a href="{{ path('customer_index') }}">Customers</a>
+							<a href="{{ path('customer_index') }}"><i class="fa fa-group"></i> Customers</a>
 						</li>
 						<li>
-							<a href="{{ path('account_index') }}">Accounts</a>
+							<a href="{{ path('account_index') }}"><i class="fa fa-balance-scale"></i> Accounts</a>
 						</li>
 						<li>
-							<a href="{{ path('debitcard_index') }}">Debit Cards</a>
+							<a href="{{ path('debitcard_index') }}"><i class="fa fa-credit-card"></i> Debit Cards</a>
 						</li>
 						{# <li class="dropdown">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="download">Simplex <span class="caret"></span></a>
@@ -74,8 +74,12 @@
 				</div>
 			</div>
 		</div>
-		<div class="container">
-			{% block body %}{% endblock %}
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12 col-sm-12">
+					{% block body %}{% endblock %}
+				</div>
+			</div>
 		</div>
 		<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 		<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
