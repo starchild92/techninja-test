@@ -1,10 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Banks list</h1>
+    <div class="page-header">
+        <a class="btn btn-primary pull-right" href="{{ path('bank_new') }}"><i class="fa fa-plus"></i> Create a new bank</a>
+        <h1><i class="fa fa-bank"></i> Banks list</h1>
+    </div>
 
-    <table class="table table-stripped">
-        <thead>
+    <table id="dataTable" class="table table-bordered table-stripped">
+        <thead class="thead-default">
             <tr>
                 <th>Id</th>
                 <th>Name</th>
@@ -21,23 +24,11 @@
                 <td>{{ bank.code }}</td>
                 <td>{{ bank.address }}</td>
                 <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('bank_show', { 'id': bank.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('bank_edit', { 'id': bank.id }) }}">edit</a>
-                        </li>
-                    </ul>
+                    <a class="btn btn-sm btn-default" href="{{ path('bank_show', { 'id': bank.id }) }}"><i class="fa fa-eye"></i> show</a>
+                    <a class="btn btn-sm btn-default" href="{{ path('bank_edit', { 'id': bank.id }) }}"><i class="fa fa-edit"></i> edit</a>
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <ul>
-        <li>
-            <a href="{{ path('bank_new') }}">Create a new bank</a>
-        </li>
-    </ul>
 {% endblock %}

@@ -1,10 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Accounts list</h1>
+    <div class="page-header">
+        <a class="btn btn-primary pull-right" href="{{ path('account_new') }}"><i class="fa fa-plus"></i> Create a new account</a>
+        <h1><i class="fa fa-rup"></i> Accounts list</h1>
+    </div>
 
-    <table class="table table-stripped">
-        <thead>
+    <table id="dataTable" class="table table-bordered table-stripped">
+        <thead class="thead-default">
             <tr>
                 <th>Id</th>
                 <th>#</th>
@@ -21,23 +24,11 @@
                 <td>{{ account.type }}</td>
                 <td>{{ account.owner }}</td>
                 <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('account_show', { 'id': account.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('account_edit', { 'id': account.id }) }}">edit</a>
-                        </li>
-                    </ul>
+                    <a class="btn btn-sm btn-default" href="{{ path('account_show', { 'id': account.id }) }}"><i class="fa fa-eye"></i> show</a>
+                    <a class="btn btn-sm btn-default" href="{{ path('account_edit', { 'id': account.id }) }}"><i class="fa fa-edit"></i> edit</a>
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <ul>
-        <li>
-            <a href="{{ path('account_new') }}">Create a new account</a>
-        </li>
-    </ul>
 {% endblock %}

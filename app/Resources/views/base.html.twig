@@ -5,10 +5,13 @@
 		<title>{% block title %}Tech Ninja Test{% endblock %}</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 		{# Theme CDN #}
-		<link rel="stylesheet" href="https://bootswatch.com/simplex/bootstrap.min.css">
+		{# <link rel="stylesheet" href="https://bootswatch.com/cosmo/bootstrap.min.css"> #}
 		{# Local theme #}
-		{# <link rel="stylesheet" href="{{ asset('css/theme.simplex.css') }}"> #}
+		<link rel="stylesheet" href="{{ asset('css/theme.simplex.css') }}">
 		<link rel="stylesheet" href="{{ asset('css/theme.custom.css') }}">
+		{# <link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css"> #}
+		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css">
+
 		{% block stylesheets %}{% endblock %}
 		<link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
 	</head>
@@ -75,6 +78,16 @@
 			{% block body %}{% endblock %}
 		</div>
 		<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+		<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+		<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+		<script type="text/javascript">
+            $(document).ready(function() {
+                dataTable = $('#dataTable').DataTable( {
+                    "pageLength": 25,
+                    "stateSave": true,
+                } );
+            } );
+        </script>
 		{% block javascripts %}{% endblock %}
 		<script src="https://use.fontawesome.com/20fc5ad78d.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
