@@ -18,8 +18,14 @@
                 <td>{{ account.owner }}</td>
             </tr>
             <tr>
-                <th>Associated Debit Card</th>
-                <td> //load here debit card information </td>
+                <th>Associated Debit Cards</th>
+                <td>
+                    <ul>
+                        {% for item in account.debitcard %}
+                        <li>{{ item.cardno }}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
             </tr>
         </tbody>
     </table>

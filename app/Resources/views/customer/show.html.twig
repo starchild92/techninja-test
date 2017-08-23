@@ -3,7 +3,7 @@
 {% block body %}
     <h1>Customer</h1>
 
-    <table>
+    <table class="table table-border">
         <tbody>
             <tr>
                 <th>Id</th>
@@ -20,6 +20,14 @@
             <tr>
                 <th>Dob</th>
                 <td>{% if customer.dob %}{{ customer.dob|date('Y-m-d') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Bank details</th>
+                <td>{{ customer.bank }}</td>
+            </tr>
+            <tr>
+                <th>Account details</th>
+                <td>{{ customer.account }}</td>
             </tr>
         </tbody>
     </table>
