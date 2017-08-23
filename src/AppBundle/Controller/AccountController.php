@@ -34,6 +34,14 @@ class AccountController extends Controller
     public function newAction(Request $request)
     {
         $account = new Account();
+
+        //Sofisticated algorithym to ensure uniqueness
+        $fecha = new \DateTime('now');
+        $cad = md5($fecha->format('d-M-Y H:s:i'));
+        $cad = substr($cad, 0, 20);
+        $account->setNumber($cad);
+        $account->setType('saving');
+
         $form = $this->createForm('AppBundle\Form\AccountType', $account);
         $form->handleRequest($request);
 
