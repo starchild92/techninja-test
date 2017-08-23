@@ -3,3 +3,9 @@ AppBundle\Entity\Account:
         - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
             fields: [owner]
             message: "This Customer has an account already, please choose another customer"
+
+AppBundle\Entity\DebitCard:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: [ownedby]
+            message: "This customer has a Credit Card, please remove it before adding a new one"
