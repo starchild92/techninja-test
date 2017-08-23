@@ -1,0 +1,5 @@
+AppBundle\Entity\Account:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: [owner]
+            message: "This Customer has an account already, please choose another customer"
