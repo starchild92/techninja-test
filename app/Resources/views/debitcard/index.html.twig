@@ -1,10 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Debitcards list</h1>
+    <div class="page-header">
+        <a class="btn btn-primary pull-right" href="{{ path('debitcard_new') }}"><i class="fa fa-plus"></i> Create a new Debit Card</a>
+        <h1><i class="fa fa-credit-card"></i> Debit Cards list</h1>
+    </div>
 
-    <table class="table table-stripped">
-        <thead>
+    <table id="dataTable" class="table table-bordered table-stripped">
+        <thead class="thead-default">
             <tr>
                 <th>Id</th>
                 <th>bank</th>
@@ -18,28 +21,16 @@
         {% for debitCard in debitCards %}
             <tr>
                 <td><a href="{{ path('debitcard_show', { 'id': debitCard.id }) }}">{{ debitCard.id }}</a></td>
-                <td>{{ debitCard.bank }}</td>
+                <td>{{ debitCard.bank.name }}</td>
                 <td>{{ debitCard.cardno }}</td>
                 <td>{{ debitCard.ownedby }}</td>
                 <td>{{ debitCard.account }}</td>
                 <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('debitcard_show', { 'id': debitCard.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('debitcard_edit', { 'id': debitCard.id }) }}">edit</a>
-                        </li>
-                    </ul>
+                    <a class="btn btn-sm btn-default" href="{{ path('debitcard_show', { 'id': debitCard.id }) }}"><i class="fa fa-eye"></i> show</a>
+                    <a class="btn btn-sm btn-default" href="{{ path('debitcard_edit', { 'id': debitCard.id }) }}"><i class="fa fa-edit"></i> edit</a>
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <ul>
-        <li>
-            <a href="{{ path('debitcard_new') }}">Create a new debitCard</a>
-        </li>
-    </ul>
 {% endblock %}

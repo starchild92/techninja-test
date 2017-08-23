@@ -3,14 +3,15 @@
 {% block body %}
     <div class="page-header">
         <a class="btn btn-primary pull-right" href="{{ path('account_new') }}"><i class="fa fa-plus"></i> Create a new account</a>
-        <h1><i class="fa fa-rup"></i> Accounts list</h1>
+        <h1><i class="fa fa-balance-scale"></i> Accounts list</h1>
     </div>
 
     <table id="dataTable" class="table table-bordered table-stripped">
         <thead class="thead-default">
             <tr>
                 <th>Id</th>
-                <th>#</th>
+                <th>Bank</th>
+                <th>Account number</th>
                 <th>Type</th>
                 <th>Owner</th>
                 <th>Actions</th>
@@ -20,6 +21,7 @@
         {% for account in accounts %}
             <tr>
                 <td><a href="{{ path('account_show', { 'id': account.id }) }}">{{ account.id }}</a></td>
+                <td>{{ account.owner.bank.name }}</td>
                 <td>{{ account.number }}</td>
                 <td>{{ account.type }}</td>
                 <td>{{ account.owner }}</td>
