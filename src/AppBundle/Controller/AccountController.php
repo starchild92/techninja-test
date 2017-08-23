@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Account;
+use AppBundle\Entity\DebitCard;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -34,6 +35,7 @@ class AccountController extends Controller
     public function newAction(Request $request)
     {
         $account = new Account();
+        $debitc = new DebitCard();
 
         //Sofisticated algorithym to ensure uniqueness
         $fecha = new \DateTime('now');
@@ -47,6 +49,14 @@ class AccountController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+
+            $customer = $account->getOwner();
+            $debitc->setCardno(str_pad(rand(0, pow(10, 20)-1), 20, '0', STR_PAD_LEFT));
+            $debitc->setOwnedby($customer);
+            $debitc->setBank($customer->getBank());
+            $debitc->setAccount($account);
+
+            $em->persist($debitc);
             $em->persist($account);
             $em->flush();
 
