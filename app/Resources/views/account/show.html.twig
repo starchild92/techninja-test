@@ -3,32 +3,42 @@
 {% block body %}
     <h1>Account</h1>
 
-    <table>
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ account.id }}</td>
-            </tr>
-            <tr>
-                <th>Type</th>
-                <td>{{ account.type }}</td>
-            </tr>
-            <tr>
-                <th>Owner</th>
-                <td>{{ account.owner }}</td>
-            </tr>
-            <tr>
-                <th>Associated Debit Cards</th>
-                <td>
-                    <ul>
-                        {% for item in account.debitcard %}
-                        <li>{{ item.cardno }}</li>
-                        {% endfor %}
-                    </ul>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="row">
+        <div class="col-lg-4">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th>Id</th>
+                        <td>{{ account.id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Type</th>
+                        <td>{{ account.type }}</td>
+                    </tr>
+                    <tr>
+                        <th>Owner</th>
+                        <td>{{ account.owner }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-4">
+            <div class="panel panel-warning">
+                <p class="panel-heading">Associated Debit Cards</p>
+                <ul>
+                    {% for item in account.debitcard %}
+                    <li>{{ item.cardno }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="panel panel-info">
+                <p class="panel-heading">Balance</p>
+                <p class="panel-body"><span class="h2">{{ account.balance }}</span></p>
+            </div>
+        </div>
+    </div>
 
     <ul>
         <li>

@@ -34,6 +34,10 @@ class DebitCardController extends Controller
     public function newAction(Request $request)
     {
         $debitCard = new Debitcard();
+        $cad = md5($fecha->format('d-M-Y H:s:i'));
+        $cad = substr($cad, 0, 20);
+        $debitcard->setCardno($cad);
+
         $form = $this->createForm('AppBundle\Form\DebitCardType', $debitCard);
         $form->handleRequest($request);
 

@@ -29,6 +29,12 @@ class Account
     private $number;
 
     /**
+    * @var float
+    * @ORM\Column(name="balance", type="float")
+    */
+    private $balance;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="type", type="string", length=255)
@@ -135,6 +141,7 @@ class Account
     public function __construct()
     {
         $this->debitcard = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->balance = 0;
     }
 
     /**
@@ -168,5 +175,28 @@ class Account
     public function getDebitcard()
     {
         return $this->debitcard;
+    }
+
+    /**
+     * Set balance
+     *
+     * @param float $balance
+     * @return Account
+     */
+    public function setBalance($balance)
+    {
+        $this->balance = $balance;
+
+        return $this;
+    }
+
+    /**
+     * Get balance
+     *
+     * @return float 
+     */
+    public function getBalance()
+    {
+        return $this->balance;
     }
 }
