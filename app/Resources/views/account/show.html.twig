@@ -8,7 +8,7 @@
 
     <div class="row">
         <div class="col-lg-4">
-            <div class="panel panel-default">
+            <div class="panel panel-primary">
                 <div class="panel-heading">Account Resume</div>
                 <table class="table table-bordered">
                     <tbody>
@@ -27,26 +27,28 @@
                     </tbody>
                 </table>
             </div>
-            <a class="btn btn-primary" href="{{ path('account_edit', { 'id': account.id }) }}"><i class="fa fa-edit"></i> Edit</a>
+            <a class="btn btn-success" href="{{ path('account_edit', { 'id': account.id }) }}"><i class="fa fa-edit"></i> Edit</a>
             {{ form_start(delete_form, {'attr': {'class': 'form-delete'}}) }}
                 <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i> Delete</button>
             {{ form_end(delete_form) }}
         </div>
         <div class="col-lg-4">
-            <div class="panel panel-default">
-                <p class="panel-heading">Associated Debit Cards</p>
-                <ul>
+            <div class="panel panel-warning">
+                <div class="panel-heading">Associated Debit Cards</div>
+                <div class="panel-body">
+                {# <ul> #}
                     {% for item in account.debitcard %}
-                    <li>{{ item.cardno }}</li>
+                    <i class="fa fa-credit-card"></i> {{ item.cardno }} <br>
                     {% endfor %}
-                </ul>
+                {# </ul> #}
+                </div>
             </div>
         </div>
         <div class="col-lg-4">
             <div class="panel panel-info">
                 <p class="panel-heading">Balance</p>
                 <p class="panel-body text-right">
-                    <span class="h2">{{ account.balance }}</span>
+                    <span class="h2">{{ account.balance|number_format(2, '.', ',') }}</span>
                 </p>
             </div>
         </div>

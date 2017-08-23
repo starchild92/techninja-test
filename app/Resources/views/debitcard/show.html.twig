@@ -1,36 +1,61 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Debitcard</h1>
+    <div class="page-header">
+        <a class="btn btn-primary pull-right" href="{{ path('debitcard_index') }}"><i class="fa fa-arrow-left"></i> Back to the list</a>
+        <h1><i class="fa fa-credit-card"></i> Debit Card</h1>
+    </div>
 
-    <table>
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ debitCard.id }}</td>
-            </tr>
-            <tr>
-                <th>Cardno</th>
-                <td>{{ debitCard.cardno }}</td>
-            </tr>
-            <tr>
-                <th>Ownedby</th>
-                <td>{{ debitCard.ownedby }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="panel panel-primary">
+                {# <div class="panel-heading"></div> #}
+                <table class="table-bordered table table-striped">
+                    <tbody>
+                        <tr>
+                            <th>Id</th>
+                            <td>{{ debitCard.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Cardno</th>
+                            <td>{{ debitCard.cardno }}</td>
+                        </tr>
+                        <tr>
+                            <th>Ownedby</th>
+                            <td>{{ debitCard.ownedby }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="panel-footer">
+                    <a class="btn btn-success" href="{{ path('debitcard_edit', { 'id': debitCard.id }) }}"><i class="fa fa-edit"></i> Edit</a>
+                    {{ form_start(delete_form, {'attr' : {'class':'form-delete'}}) }}
+                        <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i> Delete</button>
+                    {{ form_end(delete_form) }}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Card Balance</div>  
+                <div class="panel-body">
+                    Since this is a debit card, only account balance it's shown <br>
+                    <span class="h3">{{ debitCard.account.balance|number_format(2, '.', ',') }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <ul>
-        <li>
-            <a href="{{ path('debitcard_index') }}">Back to the list</a>
-        </li>
-        <li>
-            <a href="{{ path('debitcard_edit', { 'id': debitCard.id }) }}">Edit</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Debit Card transactions</div>
+                <div class="panel-body">
+                    soon you will be able to see here a list of the latest card movements associated to your accoutn
+                </div>
+                <div class="panel-footer">
+                    <button class="btn btn-warning disabled"><i class="fa fa-print"></i> Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

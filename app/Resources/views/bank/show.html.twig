@@ -1,36 +1,55 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Bank</h1>
+    <div class="page-header">
+        <a class="btn btn-default pull-right" href="{{ path('bank_index') }}"><i class="fa fa-arrow-left"></i> Back to the list</a>
+        <h1><i class="fa fa-bank"></i> Bank</h1>
+    </div>
 
-    <table>
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ bank.id }}</td>
-            </tr>
-            <tr>
-                <th>Code</th>
-                <td>{{ bank.code }}</td>
-            </tr>
-            <tr>
-                <th>Address</th>
-                <td>{{ bank.address }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <ul>
-        <li>
-            <a href="{{ path('bank_index') }}">Back to the list</a>
-        </li>
-        <li>
-            <a href="{{ path('bank_edit', { 'id': bank.id }) }}">Edit</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+    <div class="col-lg-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Bank infomation</div>
+            <table class="table-bordered table">
+                <tbody>
+                    {# <tr>
+                        <th>Id</th>
+                        <td>{{ bank.id }}</td>
+                    </tr> #}
+                    <tr>
+                        <th>Name</th>
+                        <td>{{ bank.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Code</th>
+                        <td>{{ bank.code }}</td>
+                    </tr>
+                    <tr>
+                        <th>Address</th>
+                        <td>{{ bank.address }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <a href="{{ path('bank_edit', { 'id': bank.id }) }}" class="btn btn-success"><i class="fa fa-edit"></i> Edit</a>
+                {{ form_start(delete_form, { 'attr' : { 'class' : 'form-delete' }}) }}
+                    <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i> Delete</button>
+                {{ form_end(delete_form) }}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Customers</div>
+            {# <div class="panel-body">
+                here you will see the list of members asociated to this bank
+            </div> #}
+            <table class="table table-bordered table-stripped">
+            {% for dc in bank.debitcards %}
+                <tr>
+                    <td>{{ dc.ownedby }}</td>
+                </tr>
+            {% endfor %}
+            </table>
+        </div>
+    </div>
 {% endblock %}
