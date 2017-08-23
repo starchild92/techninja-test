@@ -1,21 +1,18 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Debitcard edit</h1>
+    <div class="page-header">
+        
+        <a class="btn btn-default pull-right" href="{{ path('debitcard_index') }}"><i class="fa fa-arrow-left"></i> Back to the list</a>
+        <h1 class="text-success">Debit Card edit</h1>
+    </div>
 
-    {{ form_start(edit_form) }}
+    {{ form_start(edit_form, {'attr' : {'class':'form-delete'}}) }}
         {{ form_widget(edit_form) }}
-        <input type="submit" value="Edit" />
+        <button type="submit" class="btn btn-success"><i class="fa fa-save"></i> Save Changes</button>
     {{ form_end(edit_form) }}
 
-    <ul>
-        <li>
-            <a href="{{ path('debitcard_index') }}">Back to the list</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+    {{ form_start(delete_form, {'attr' : {'class':'form-delete'}}) }}
+        <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i> Delete</button>
+    {{ form_end(delete_form) }}
 {% endblock %}
