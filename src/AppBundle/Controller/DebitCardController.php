@@ -34,15 +34,20 @@ class DebitCardController extends Controller
     public function newAction(Request $request)
     {
         $debitCard = new Debitcard();
+        $fecha = new \DateTime('now');
         $cad = md5($fecha->format('d-M-Y H:s:i'));
         $cad = substr($cad, 0, 20);
-        $debitcard->setCardno($cad);
+        $debitCard->setCardno($cad);
 
         $form = $this->createForm('AppBundle\Form\DebitCardType', $debitCard);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+            $owner = $debitCard->getOwnedby();
+            $debitCard->setBank($owner->getBank());
+            $debitCard->setAccount($owner->getAccount());
+            
             $em->persist($debitCard);
             $em->flush();
 
