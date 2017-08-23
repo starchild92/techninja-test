@@ -1,7 +1,7 @@
 var $collectionDC;
 var $cantHijos;
 // setup an "add a tag" link
-var $addTagLinkDCs = $('<button style="margin-top: 10px;" class="btn btn-success btn-sm" type="button" href="#" class="add_tag_link"><span class="glyphicon glyphicon-phone-alt" aria-hidden="true"></span> Agregue un DC</button>');
+var $addTagLinkDCs = $('<button style="margin-top: 10px;" class="btn btn-success btn-sm" type="button" href="#" class="add_tag_link"><span class="glyphicon glyphicon-credit-card" aria-hidden="true"></span> Add Debit Card</button>');
 var $newLinkLiDCs = $('<div></div>').append($addTagLinkDCs);
 
 jQuery(document).ready(function() {
@@ -10,7 +10,7 @@ jQuery(document).ready(function() {
 
     //Para en el editar quitar un almacen
     $collectionDC.children().append(
-        '<a href="#" class="remove-tag-debitcard btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Quitar DC</a>');
+        '<a href="#" class="remove-tag-debitcard btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove Debit Card</a>');
 
     $removerDC = $collectionDC.find('.remove-tag-debitcard');
     $cantHijos = $removerDC.length;
@@ -66,7 +66,7 @@ function addTagFormDC($collectionDC, $newLinkLiDCs) {
     //$newLinkLiDCs.before($newFormLiDCs);
 
     // also add a remove button, just for this example
-    $newFormLiDCs.append('<a href="#" class="remove-tag-debitcard btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Quitar DC</a>');
+    $newFormLiDCs.append('<a href="#" class="remove-tag-debitcard btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Remove Debit Card</a>');
     
     $newLinkLiDCs.before($newFormLiDCs);
     
