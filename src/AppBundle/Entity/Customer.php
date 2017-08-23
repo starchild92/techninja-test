@@ -50,7 +50,7 @@ class Customer
     private $dob;
 
     /**
-     * @ORM\OneToOne(targetEntity="Bank", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Bank", cascade={"persist"})
      * @ORM\JoinColumn(name="bank_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $bank;

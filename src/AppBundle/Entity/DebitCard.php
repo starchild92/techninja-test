@@ -24,7 +24,7 @@ class DebitCard
     /**
      * @var string
      *
-     * @ORM\Column(name="cardno", type="string", length=255, unique=true)
+     * @ORM\Column(name="cardno", type="string", length=20, unique=true)
      */
     private $cardno;
 
