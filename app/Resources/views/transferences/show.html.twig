@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="page-header">
+        <h1>Transference</h1>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="panel panel-primary">
+                <div class="panel-heading">Transference details</div>
+                <div class="panel-body">
+                    <span class="h3">ID: {{ transference.id }}</span><br>
+                    <span class="h4">Date & Time: {% if transference.date %}{{ transference.date|date('Y-m-d H:i:s') }}{% endif %}</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="list-group">
+              <a href="{{ path('account_show', { 'id': transference.origin.account.id }) }}" class="list-group-item">
+                <i class="fa fa-arrow-up pull-left fa-3x"></i>
+                <h4 class="list-group-item-heading">Origin Account</h4>
+                <p class="list-group-item-text">
+                    {{ transference.origin.account.owner.name }} - {{ transference.origin.account.number }}
+                    
+                </p>
+              </a>
+              <a href="{{ path('account_show', { 'id': transference.destination.account.id }) }}" class="list-group-item">
+                <i class="fa fa-arrow-down pull-left fa-3x"></i>
+                <h4 class="list-group-item-heading">Destination Account</h4>
+                <p class="list-group-item-text">
+                    {{ transference.destination.account.owner.name }} - {{ transference.destination.account.number }}
+                </p>
+              </a>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="panel panel-success">
+                <div class="panel-heading">Amount</div>
+                <div class="panel-body text-right">
+                    <span class="h2">{{ transference.amount|number_format(2, '.', ',') }}</span>
+                </div>
+                <div class="panel-footer">
+                    no charges were apply to this transaction
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

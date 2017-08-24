@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Transferences list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for transference in transferences %}
+            <tr>
+                <td><a href="{{ path('transferences_show', { 'id': transference.id }) }}">{{ transference.id }}</a></td>
+                <td>{% if transference.date %}{{ transference.date|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('transferences_show', { 'id': transference.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('transferences_edit', { 'id': transference.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('transferences_new') }}">Create a new transference</a>
+        </li>
+    </ul>
+{% endblock %}

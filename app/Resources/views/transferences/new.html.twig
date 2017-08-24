@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="page-header">
+        
+        <a class="btn btn-default pull-right" href="{{ path('transferences_index') }}"><i class="fa fa-arrow-left"></i> Back to the list</a>
+        <h1><i class="fa fa-random"></i> Transference creation</h1>
+    </div>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-success btn-block"><i class="fa fa-check"></i> Make Transaction</button>
+    {{ form_end(form) }}
+{% endblock %}
