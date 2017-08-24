@@ -24,6 +24,10 @@
                             <th>Owner:</th>
                             <td>{{ account.owner }}</td>
                         </tr>
+                        <tr>
+                            <th>Number</th>
+                            <td>{{ account.number }}</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -32,7 +36,7 @@
                 <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i> Delete</button>
             {{ form_end(delete_form) }}
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-3">
             <div class="panel panel-warning">
                 <div class="panel-heading">Associated Debit Cards</div>
                 <div class="panel-body">
@@ -43,13 +47,35 @@
                 {# </ul> #}
                 </div>
             </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="panel panel-info">
+            
+            <div class="panel panel-success">
                 <p class="panel-heading">Balance</p>
                 <p class="panel-body text-right">
                     <span class="h2">{{ account.balance|number_format(2, '.', ',') }}</span>
                 </p>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="panel panel-info">
+                <div class="panel-heading">Related transferences</div>
+                <table class="table table-bordered table-striped">
+                    <thead class="thead-default">
+                        <tr>
+                            <th>Date</th>
+                            <th>Income</th>
+                            <th>Outcome</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in transactions %}
+                        <tr>
+                            <td>{{ t.date|date('Y-m-d H:i:s') }}</td>
+                            <td>{% if t.destination.id == account.owner.id %}+{{ t.amount|number_format(2, '.', ',') }} {% else %} 0.00 {% endif %}</td>
+                            <td>{% if t.origin.id == account.owner.id %}-{{ t.amount|number_format(2, '.', ',') }} {% else %} 0.00 {% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

@@ -12,6 +12,7 @@
                 <th>Id</th>
                 <th>Bank</th>
                 <th>Account number</th>
+                <th>Balance</th>
                 <th>Type</th>
                 <th>Owner</th>
                 <th>Actions</th>
@@ -23,6 +24,7 @@
                 <td><a href="{{ path('account_show', { 'id': account.id }) }}">{{ account.id }}</a></td>
                 <td>{{ account.owner.bank.name }}</td>
                 <td>{{ account.number }}</td>
+                <td>{{ account.balance|number_format(2, '.', ',') }}</td>
                 <td>{{ account.type }}</td>
                 <td>{{ account.owner }}</td>
                 <td>
