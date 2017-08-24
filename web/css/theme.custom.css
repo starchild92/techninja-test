@@ -2,6 +2,7 @@ body{padding-top:40px}body>.navbar{-webkit-transition:background-color .3s ease-
 
 .page-header > h1 { font-size: 3em; }
 .text-right { text-align: right; }
+.text-bold{ font-weight: bold; }
 .form-delete { display: inline; }
 thead.thead-default {
 	font-weight: 600;
