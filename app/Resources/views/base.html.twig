@@ -74,6 +74,19 @@
 				</div>
 			</div>
 		</div>
+		{% for flashMessage in app.session.flashbag.get('exito') %}
+            <p id="mensaje-a-esconder" class="mensaje mensaje-exito"><i class="fa fa-thumbs-up fa-lg"></i>{{ flashMessage|raw }}</p>
+        {% endfor %}
+        {% for flashMessage in app.session.flashbag.get('advertencia') %}
+            <p id="mensaje-a-esconder" class="mensaje mensaje-advertencia"><i class="fa fa-exclamation fa-lg"></i>{{ flashMessage|raw }}</p>
+        {% endfor %}
+        {% for flashMessage in app.session.flashbag.get('error') %}
+            <p id="mensaje-a-esconder" class="mensaje mensaje-error"><i class="fa fa-close fa-lg"></i>{{ flashMessage|raw }}</p>
+        {% endfor %}
+        <p id="mensaje-a-esconder" class="mensaje mensaje-advertencia"><i class="fa fa-exclamation fa-lg"></i> Here lies a very important message</p>
+        <p id="mensaje-a-esconder" class="mensaje mensaje-exito"><i class="fa fa-exclamation fa-lg"></i> Here lies a very important message</p>
+        <p id="mensaje-a-esconder" class="mensaje mensaje-error"><i class="fa fa-exclamation fa-lg"></i> Here lies a very important message</p>
+
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-lg-12 col-sm-12">
@@ -90,6 +103,9 @@
                     "pageLength": 25,
                     "stateSave": true,
                 } );
+                $('body').on('click','#mensaje-a-esconder', function(){
+                    $(this).fadeOut('slow');
+                });
             } );
         </script>
 		{% block javascripts %}{% endblock %}

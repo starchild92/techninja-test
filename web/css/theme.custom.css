@@ -8,5 +8,53 @@ thead.thead-default {
 	font-weight: 600;
 	background: #ddd;
 }
+/*****************************/
+/* Mensajes de los flashbags */
+/*****************************/
+.mensaje {
+	padding: 10px;
+	font-size: 1.1em;
+	margin: 0px;
+	text-align: center;
+}
+/* Correción para los iconos de los mensajes */
+.mensaje-advertencia > i,
+.mensaje-exito > i,
+.mensaje-error > i {
+	margin-top: 3px;
+	padding-right: 13px !important;
+	margin-left: 13px;
+}
+.mensaje-advertencia{
+	background-color: #ffff03;
+	color: #000;
+}
+.mensaje-advertencia:hover {
+	cursor: pointer;
+	background-color: #CDDC39;
+	color: #FFF;
+}
+.mensaje-exito{
+	background-color: #227fda;
+	color: #FFF;
+}
+.mensaje-exito:hover {
+	cursor: pointer;
+	background-color: rgba(34, 127, 218, 0.73);
+	color: #FFF;
+}
+.mensaje-error{
+	background-color: #F44336;
+	color: #FFF;
+}
+.mensaje-error:hover {
+	cursor: pointer;
+	background-color: rgba(244, 67, 54, 0.85);
+	color: #FFF;
+}
+/*********************************/
+/* End Mensajes de los flashbags */
+/*********************************/
+
 /*Overwriting this clasess*/
 .page-header { margin: 20px 0 18px; }
