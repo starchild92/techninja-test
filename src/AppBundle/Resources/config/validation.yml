@@ -21,3 +21,10 @@ AppBundle\Entity\Account:
         - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
             fields: [owner]
             message: "This Customer has an account already, please choose another customer"
+    properties:
+        type:
+            - Choice:
+                choices:  [Saving, Check]
+                message:  Choose a valid type of bank account
+        owner:
+            - NotNull: ~
