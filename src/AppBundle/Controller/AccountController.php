@@ -42,7 +42,7 @@ class AccountController extends Controller
         $cad = md5($fecha->format('d-M-Y H:s:i'));
         $cad = substr($cad, 0, 20);
         $account->setNumber($cad);
-        $account->setType('saving');
+        $account->setType('Saving');
 
         $form = $this->createForm('AppBundle\Form\AccountType', $account);
         $form->handleRequest($request);

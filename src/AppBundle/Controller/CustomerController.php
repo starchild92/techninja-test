@@ -64,7 +64,10 @@ class CustomerController extends Controller
             $em->persist($debitc);
             $em->flush();
 
+            $this->get('session')->getFlashBag()->add('exito', "You have register a new customer, this created also a bank account and a debit card, both linked to your new customer.");
             return $this->redirectToRoute('customer_show', array('id' => $customer->getId()));
+        }else{
+            $this->get('session')->getFlashBag()->add('error', "Something dreadful happened while processing your request, we beg you to try again");
         }
 
         return $this->render('customer/new.html.twig', array(
@@ -100,7 +103,10 @@ class CustomerController extends Controller
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
+            $this->get('session')->getFlashBag()->add('exito', "Customer changes saved with no problem");
             return $this->redirectToRoute('customer_edit', array('id' => $customer->getId()));
+        }else{
+            $this->get('session')->getFlashBag()->add('advertencia', "Something happened, don't worry about a thing, TRY AGAIN!");
         }
 
         return $this->render('customer/edit.html.twig', array(
@@ -128,6 +134,8 @@ class CustomerController extends Controller
 
             $em->remove($customer);
             $em->flush();
+
+            $this->get('session')->getFlashBag()->add('exito', "It's hard to say goodbye, I know. Everything its fine.");
         }
 
         return $this->redirectToRoute('customer_index');

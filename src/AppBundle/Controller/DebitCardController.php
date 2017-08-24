@@ -51,7 +51,10 @@ class DebitCardController extends Controller
             $em->persist($debitCard);
             $em->flush();
 
+            $this->get('session')->getFlashBag()->add('exito', "A new debit card was added, very good.");
             return $this->redirectToRoute('debitcard_show', array('id' => $debitCard->getId()));
+        }else{
+            $this->get('session')->getFlashBag()->add('error', "Oh no, something happened, we're sorry.");
         }
 
         return $this->render('debitcard/new.html.twig', array(
@@ -87,7 +90,10 @@ class DebitCardController extends Controller
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
+            $this->get('session')->getFlashBag()->add('exito', "Changes must be done, in this case, they were saved with no trouble.");
             return $this->redirectToRoute('debitcard_edit', array('id' => $debitCard->getId()));
+        }else{
+            $this->get('session')->getFlashBag()->add('error', "Not good, something happened while trying to process your request");
         }
 
         return $this->render('debitcard/edit.html.twig', array(
@@ -110,6 +116,7 @@ class DebitCardController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->remove($debitCard);
             $em->flush();
+            $this->get('session')->getFlashBag()->add('exito', "Debit card removed successfully");
         }
 
         return $this->redirectToRoute('debitcard_index');

@@ -49,6 +49,7 @@ class BankController extends Controller
             $em->persist($bank);
             $em->flush();
 
+            $this->get('session')->getFlashBag()->add('exito', "You have created a bank successfully");
             return $this->redirectToRoute('bank_show', array('id' => $bank->getId()));
         }
 
@@ -92,6 +93,7 @@ class BankController extends Controller
 
             $this->getDoctrine()->getManager()->flush();
 
+            $this->get('session')->getFlashBag()->add('exito', "You have modified a bank successfully");
             return $this->redirectToRoute('bank_edit', array('id' => $bank->getId()));
         }
 
@@ -115,8 +117,11 @@ class BankController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->remove($bank);
             $em->flush();
+        }else{
+            $this->get('session')->getFlashBag()->add('error', "Something went wrong with you request");
         }
 
+        $this->get('session')->getFlashBag()->add('exito', "Deletation of the bank was successfull");
         return $this->redirectToRoute('bank_index');
     }
 
