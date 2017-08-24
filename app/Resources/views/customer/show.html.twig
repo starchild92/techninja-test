@@ -49,12 +49,16 @@
         <div class="panel panel-info">
             <div class="panel-heading">Debit Card <i class="fa fa-credit-card-alt pull-right"></i></div>
             {# <div class="panel-body"></div> #}
+            {% if customer.account.debitcard|length == 0 %}
+                <div class="panel-body text-center text-info">This customer does not own a debit card. You can add one making click <a href="{{ path('debitcard_new') }}" class="link">here</a>.</div>
+            {% else %}
             <table class="table table-bordered">
                 <tr>
                     <th>Number</th>
                     <td>{% for item in customer.account.debitcard %}{{ item.cardno }}{% endfor %}</td>
                 </tr>
             </table>
+            {% endif %}
         </div>
         <div class="panel panel-success">
             <div class="panel-heading">Balance <i class="fa fa-dollar pull-right"></i></div>
