@@ -1,11 +1,23 @@
+AppBundle\Entity\Bank:
+    properties:
+        name:
+            - NotBlank: ~
+
+AppBundle\Entity\DebitCard:
+    properties:
+        cardno:
+            - Length:
+                min: 20
+                max: 20
+                minMessage: 'Card number must be exact {{ limit }} characters long'
+                maxMessage: 'Card number must be exact {{ limit }} characters long'
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: [ownedby]
+            message: "This customer has a Credit Card, please remove it before adding a new one"
+
 AppBundle\Entity\Account:
     constraints:
         - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
             fields: [owner]
             message: "This Customer has an account already, please choose another customer"
-
-AppBundle\Entity\DebitCard:
-    constraints:
-        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
-            fields: [ownedby]
-            message: "This customer has a Credit Card, please remove it before adding a new one"
