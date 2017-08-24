@@ -13,3 +13,7 @@ app_account:
 app_debitcard:
     resource: "@AppBundle/Resources/config/routing/debitcard.yml"
     prefix:   /debitcard
+
+app_transferences:
+    resource: "@AppBundle/Resources/config/routing/transferences.yml"
+    prefix:   /transferences
