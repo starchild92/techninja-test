@@ -24,7 +24,7 @@
                 <td>{{ debitCard.bank.name }}</td>
                 <td>{{ debitCard.cardno }}</td>
                 <td>{{ debitCard.ownedby }}</td>
-                <td>{{ debitCard.account }}</td>
+                <td>{{ debitCard.account.number }}</td>
                 <td>
                     <a class="btn btn-sm btn-default" href="{{ path('debitcard_show', { 'id': debitCard.id }) }}"><i class="fa fa-eye"></i> show</a>
                     <a class="btn btn-sm btn-default" href="{{ path('debitcard_edit', { 'id': debitCard.id }) }}"><i class="fa fa-edit"></i> edit</a>

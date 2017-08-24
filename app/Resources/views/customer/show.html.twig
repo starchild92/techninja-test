@@ -6,47 +6,61 @@
         <h1><i class="fa fa-user"></i> Customer</h1>
     </div>
 
-    <div class="col-lg-12">
-        <h2 class="text-info">User Detailed Information <i class="fa fa-info pull-right"></i></h2>
+    <div class="col-lg-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">User Detailed Information <i class="fa fa-info pull-right"></i></div>
+            <table class="table table-bordered">
+                <tbody>
+                    {# <tr>
+                        <th>Id</th>
+                        <td>{{ customer.id }}</td>
+                    </tr> #}
+                    <tr>
+                        <th>Name</th>
+                        <td>{{ customer.name }} {{ customer.lastname }}</td>
+                    </tr>
+                    <tr>
+                        <th>Address</th>
+                        <td>{{ customer.address }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date of birth</th>
+                        <td>{% if customer.dob %}{{ customer.dob|date('Y-m-d') }}{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <th>Bank details</th>
+                        <td>{{ customer.bank.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Account details</th>
+                        <td>{{ customer.account.number }} | {{ customer.account.type }} <a href="{{ path('account_show', {'id' : customer.account.id })}}"><i class="fa fa-link"></i></a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="panel-footer">
+                <a class="btn btn-success" href="{{ path('customer_edit', { 'id': customer.id }) }}"><i class="fa fa-edit"></i> Edit</a>
+                {{ form_start(delete_form, {'attr' : { 'class' : 'form-delete' }}) }}
+                    <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i> Delete </button>
+                {{ form_end(delete_form) }}
+            </div>
+        </div>
     </div>
     <div class="col-lg-6">
-        <table class="table table-bordered">
-            <tbody>
+        <div class="panel panel-info">
+            <div class="panel-heading">Debit Card <i class="fa fa-credit-card-alt pull-right"></i></div>
+            {# <div class="panel-body"></div> #}
+            <table class="table table-bordered">
                 <tr>
-                    <th>Id</th>
-                    <td>{{ customer.id }}</td>
+                    <th>Number</th>
+                    <td>{% for item in customer.account.debitcard %}{{ item.cardno }}{% endfor %}</td>
                 </tr>
-                <tr>
-                    <th>Name</th>
-                    <td>{{ customer.name }} {{ customer.lastname }}</td>
-                </tr>
-                <tr>
-                    <th>Address</th>
-                    <td>{{ customer.address }}</td>
-                </tr>
-                <tr>
-                    <th>Date of birth</th>
-                    <td>{% if customer.dob %}{{ customer.dob|date('Y-m-d') }}{% endif %}</td>
-                </tr>
-                <tr>
-                    <th>Bank details</th>
-                    <td>{{ customer.bank.name }}</td>
-                </tr>
-                <tr>
-                    <th>Account details</th>
-                    <td>{{ customer.account.number }} | {{ customer.account.type }}</td>
-                </tr>
-            </tbody>
-        </table>
-            <a class="btn btn-success" href="{{ path('customer_edit', { 'id': customer.id }) }}"><i class="fa fa-edit"></i> Edit</a>
-            {{ form_start(delete_form, {'attr' : { 'class' : 'form-delete' }}) }}
-                <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i> Delete </button>
-            {{ form_end(delete_form) }}
-    </div>
-    <div class="col-lg-6">
+            </table>
+        </div>
         <div class="panel panel-success">
-            <div class="panel-heading">Balance movemnts</div>
-            <div class="panel-body">in a none distant future you will be able to see here the movents related to you saving account</div>
+            <div class="panel-heading">Balance <i class="fa fa-dollar pull-right"></i></div>
+            <div class="panel-body text-right">
+                <span class="h2">{{ customer.account.balance|number_format(2, '.', ',') }}</span>
+            </div>
         </div>
     </div>
 {% endblock %}
