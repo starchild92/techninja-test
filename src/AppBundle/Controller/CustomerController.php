@@ -66,8 +66,6 @@ class CustomerController extends Controller
 
             $this->get('session')->getFlashBag()->add('exito', "You have register a new customer, this created also a bank account and a debit card, both linked to your new customer.");
             return $this->redirectToRoute('customer_show', array('id' => $customer->getId()));
-        }else{
-            $this->get('session')->getFlashBag()->add('error', "Something dreadful happened while processing your request, we beg you to try again");
         }
 
         return $this->render('customer/new.html.twig', array(
@@ -127,10 +125,6 @@ class CustomerController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-
-            //eliminando cuenta y tarjeta de debito
-            // $customer->setBank(null);
-            // $customer->setAccount(null);
 
             $em->remove($customer);
             $em->flush();

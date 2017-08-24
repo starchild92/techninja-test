@@ -117,8 +117,6 @@ class BankController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->remove($bank);
             $em->flush();
-        }else{
-            $this->get('session')->getFlashBag()->add('error', "Something went wrong with you request");
         }
 
         $this->get('session')->getFlashBag()->add('exito', "Deletation of the bank was successfull");

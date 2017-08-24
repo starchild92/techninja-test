@@ -60,6 +60,8 @@ class AccountController extends Controller
             $em->persist($account);
             $em->flush();
 
+            $this->get('session')->getFlashBag()->add('exito', "A new account has been created.");
+
             return $this->redirectToRoute('account_show', array('id' => $account->getId()));
         }
 
@@ -76,9 +78,12 @@ class AccountController extends Controller
     public function showAction(Account $account)
     {
         $deleteForm = $this->createDeleteForm($account);
+        $em = $this->getDoctrine()->getManager();
+        $transferences = $em->getRepository('AppBundle:Transferences')->getTransferences($account->getOwner()->getId());
 
         return $this->render('account/show.html.twig', array(
             'account' => $account,
+            'transactions' => $transferences,
             'delete_form' => $deleteForm->createView(),
         ));
     }
@@ -96,7 +101,9 @@ class AccountController extends Controller
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('account_edit', array('id' => $account->getId()));
+            $this->get('session')->getFlashBag()->add('exito', "Edition was successfull");
+
+            return $this->redirectToRoute('account_show', array('id' => $account->getId()));
         }
 
         return $this->render('account/edit.html.twig', array(
@@ -119,6 +126,8 @@ class AccountController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->remove($account);
             $em->flush();
+
+            $this->get('session')->getFlashBag()->add('exito', "It is always hard to say goodbye. This account is closed for good."); 
         }
 
         return $this->redirectToRoute('account_index');
