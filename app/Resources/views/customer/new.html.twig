@@ -1,16 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Customer creation</h1>
+    <div class="page-header">
+        <a class="btn btn-default pull-right" href="{{ path('customer_index') }}"><i class="fa fa-arrow-left"></i> Back to the list</a>
+        <h1 class="text-info">Customer creation</h1>
+    </div>
 
     {{ form_start(form) }}
         {{ form_widget(form) }}
-        <input type="submit" value="Create" />
+        <button type="submit" class="btn btn-success btn-block"><i class="fa fa-check"></i> Add a New Customer</button>
     {{ form_end(form) }}
-
-    <ul>
-        <li>
-            <a href="{{ path('customer_index') }}">Back to the list</a>
-        </li>
-    </ul>
 {% endblock %}

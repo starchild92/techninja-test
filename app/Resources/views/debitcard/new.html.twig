@@ -1,16 +1,25 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Debitcard creation</h1>
+    <div class="page-header">
+        <a class="btn btn-default pull-right" href="{{ path('debitcard_index') }}"><i class="fa fa-arrow-left"></i> Back to the list</a>
+        <h1 class="text-info">Debitcard creation</h1>
+    </div>
 
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <input type="submit" value="Create" />
-    {{ form_end(form) }}
-
-    <ul>
-        <li>
-            <a href="{{ path('debitcard_index') }}">Back to the list</a>
-        </li>
-    </ul>
+    <div class="row">
+        <div class="col-lg-8">
+            {{ form_start(form) }}
+                {{ form_widget(form) }}
+                <button type="submit" class="btn btn-success btn-block"><i class="fa fa-check"></i> Add a New Debit Card</button>
+            {{ form_end(form) }}
+        </div>
+        <div class="col-lg-4">
+            <div class="panel panel-info">
+                <div class="panel-heading"><i class="fa fa-info"></i> Important</div>
+                <div class="panel-body">
+                    When a new debit card is created and linked to a existing customer, the customer account is automatically associated to the debit card
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
