@@ -11,10 +11,28 @@ AppBundle\Entity\DebitCard:
                 max: 20
                 minMessage: 'Card number must be exact {{ limit }} characters long'
                 maxMessage: 'Card number must be exact {{ limit }} characters long'
+
     constraints:
         - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
             fields: [ownedby]
             message: "This customer has a Credit Card, please remove it before adding a new one"
+
+AppBundle\Entity\Customer:
+    properties:
+        name:
+            - Length:
+                min: 3
+                max: 15
+                minMessage: 'This field has a least {{ limit }} characters long'
+                maxMessage: 'This field {{ limit }} characters long'
+        lastname:
+            - Length:
+                min: 3
+                max: 15
+                minMessage: 'This field has a least {{ limit }} characters long'
+                maxMessage: 'This field {{ limit }} characters long'
+        bank:
+            - NotBlank: ~
 
 AppBundle\Entity\Account:
     constraints:
